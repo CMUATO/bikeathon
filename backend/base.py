@@ -1,5 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+import stripe
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
@@ -15,4 +17,13 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
- 
+# Set your secret key: remember to change this to your live secret key in production
+# See your keys here: https://dashboard.stripe.com/account/apikeys
+stripe.api_key = "sk_test_BQokikJOvBiI2HlWgH4olfQ2"
+
+# Token is created using Checkout or Elements!
+# Get the payment token ID submitted by the form:
+stripe.Charge.retrieve(
+  "ch_1BKZ5Q2eZvKYlo2CrmTJgJBF",
+  api_key="sk_test_BQokikJOvBiI2HlWgH4olfQ2"
+)
