@@ -1,4 +1,6 @@
 #!flask/bin/python
+from __future__ import print_function
+
 from flask import Flask
 from flask import abort
 from flask import request
@@ -16,12 +18,12 @@ from db_manager import app
 @app.route('/sensor', methods=['POST'])
 def postBikeData():
 	jsonDict = request.get_json()
-	print jsonDict
+	print(jsonDict)
 	#Throw error if data not included
 	if not jsonDict or not 'speed' in jsonDict or not 'distance' in jsonDict or not 'bikeid' in jsonDict:
 		abort(400)
 
-	print "SPEED", jsonDict['speed'], "DISTANCE", jsonDict['distance'], "BIKE_ID", jsonDict['bikeid']
+	print("SPEED", jsonDict['speed'], "DISTANCE", jsonDict['distance'], "BIKE_ID", jsonDict['bikeid'])
 	return 'ok', 200
 
 #Return index.html
