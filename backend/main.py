@@ -4,6 +4,7 @@ from flask import abort
 from flask import request
 from user import User
 from flask_sqlalchemy import SQLAlchemy
+from flask import render_template
 import stripe
 import json
 import ssl
@@ -26,7 +27,7 @@ def postBikeData():
 #Return index.html
 @app.route('/')
 def index():
-    return render_template('index.html', key=stripe_keys['publishable_key'])
+    return render_template('index.html', key="")
 
 #Charge user
 @app.route('/charge', methods=['POST'])
