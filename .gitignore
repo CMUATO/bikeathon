@@ -1,0 +1,4 @@
+*.pyc
+
+backend/client_secret.json
+backend/sheets.googleapis.com-python.json

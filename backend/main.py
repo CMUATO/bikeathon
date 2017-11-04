@@ -6,6 +6,7 @@ from user import User
 from flask_sqlalchemy import SQLAlchemy
 import stripe
 import json
+import ssl
 
 from db_manager import db
 from db_manager import app
@@ -21,6 +22,32 @@ def postBikeData():
 
 	print "SPEED", jsonDict['speed'], "DISTANCE", jsonDict['distance'], "BIKE_ID", jsonDict['bikeid']
 	return 'ok', 200
+
+#Return index.html
+@app.route('/')
+def index():
+    return render_template('index.html', key=stripe_keys['publishable_key'])
+
+#Charge user
+@app.route('/charge', methods=['POST'])
+def charge():
+    # Amount in cents
+    amount = 500
+
+    customer = stripe.Customer.create(
+        email='customer@example.com',
+        source=request.form['stripeToken']
+    )
+
+    charge = stripe.Charge.create(
+        customer=customer.id,
+        amount=amount,
+        currency='usd',
+        description='Flask Charge'
+    )
+
+    return render_template('charge.html', amount=amount)
+
 
 #Set up Stripe
 def setupStripe():
