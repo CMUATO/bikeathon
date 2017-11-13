@@ -1,0 +1,64 @@
+@font-face {
+    font-family: 'comfortaaregular';
+    src: url('comfortaa_regular-webfont.woff2') format('woff2'),
+         url('comfortaa_regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+body {
+  margin: 0;
+  background-image: url("background.jpg");
+  font-family: 'comfortaaregular';
+  font-size: 3em;
+  color: white;
+}
+
+#title {
+  color: #2c6e7c;
+  position: absolute;
+  font-size: 3em;
+  font-family: 'Lobster', cursive;
+  padding: 50px;
+  text-align: center;
+  width: 100%;
+  z-index: 2;
+}
+
+#title>img {
+  width: auto;
+  height: .72em;
+}
+
+#gif-wrap {
+  text-align: center;
+  position: absolute;
+  left: 8%;
+  top: 18%;
+}
+
+#gif-wrap>img {
+  display: block;
+  z-index: 1;
+}
+
+#gif-wrap>a {
+  margin-top: -120px;
+}
+
+#stats {
+  position: absolute;
+  left: 48%;
+  top: 25%;
+}
+
+.btn-large {
+  text-transform: none;
+  font-size: 3rem;
+}
+
+.accent {
+  font-size: 2em;
+  color: #e06300;
+}
