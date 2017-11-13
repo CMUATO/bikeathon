@@ -45,7 +45,6 @@ class Rider(object):
 	#Sends payload to server at url
 	#sends name and speed as variables
 	def Push(self):
-		print("push")
 		r = requests.post(self.url, data=self.payload)
 		self.last_push = time.time()
 
@@ -65,11 +64,15 @@ class Rider(object):
 
 		
 #Data is used to replicate changing threshold
-Chris = Rider()
+Rider1 = Rider()
+Rider2 = Rider()
+Rider3 = Rider()
 data = random.randint(4998,5002)
 while(True):
 	#print(Chris.last_speed)
-	Chris.Changer(data)
+	Rider1.Changer(data)
+	Rider2.Changer(data)
+	Rider3.Changer(data)
 	data = random.randint(4998,5002)
 	
 
