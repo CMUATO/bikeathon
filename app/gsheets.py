@@ -1,16 +1,13 @@
 import pygsheets
 
 
-def fetch_as_df():
-    gc = pygsheets.authorize('gsheets_secret.json', no_cache=True)
-    sh = gc.open_by_key('1tTuWHk3c-JVvdOOSVVA1rIOjjz8eMf-Zyh1Fit5JwPc')
-    wks = sh.worksheet_by_title('Data')
-    df = wks.get_as_df().set_index('Method')
-    return df
+gc = pygsheets.authorize('gsheets_secret.json', no_cache=True)
+sh = gc.open_by_key('1tTuWHk3c-JVvdOOSVVA1rIOjjz8eMf-Zyh1Fit5JwPc')
+wks = sh.worksheet_by_title('Data')
 
 
 def fetch_gsheet_total():
-    df = fetch_as_df()
+    df = wks.get_as_df().set_index('Method')
     venmo_total = df.at['Venmo', 'Total']
     cash_total = df.at['Cash', 'Total']
     card_total = df.at['Card', 'Total']

@@ -1,8 +1,8 @@
 #!flask/bin/python
 from __future__ import print_function
 
-from flask import Flask, abort, request, render_template
-#from user import User
+
+from flask import Flask, abort, request, render_template, send_file, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 import stripe
 import json
@@ -27,7 +27,12 @@ def postBikeData():
 #Return index.html
 @app.route('/')
 def index():
-    return render_template('index.html', miles = 123, time = 123, money = 123)
+    return send_file('index.html')
+
+# Static files
+@app.route('/static/<path:path>')
+def send_js(path):
+    return send_from_directory('static', path)
 
 #Charge user
 @app.route('/charge', methods=['POST'])
