@@ -38,7 +38,7 @@ class Rider(object):
 	def Update_Payload(self):
 		self.Speed()
 		self.distance += self.circumfrence
-		self.payload = {"name":self.name, "distance":self.distance, "time":time.time()}
+		self.payload = {"name":self.name, "distance":self.distance, "spped":self.last_speed,"time":time.time()}
 
 
 	#Sends payload to server at url
