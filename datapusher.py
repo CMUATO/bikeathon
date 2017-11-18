@@ -60,10 +60,7 @@ class Rider(object):
 
 
 
-		
-Rider1 = Rider()
-while(True):
-	Rider1.Changer(data)
+
 
 	
 
