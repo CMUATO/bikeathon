@@ -9,7 +9,7 @@ function updateTime(start) {
     minutes = "0" + String(minutes % 60);
     seconds = "0" + String(seconds % 60);
 
-    let display = `${hours % 24}:${minutes.slice(-2)}:${seconds.slice(-2)}`;
+    let display = `${hours}:${minutes.slice(-2)}:${seconds.slice(-2)}`;
     $("#time").html(display);
 }
 
