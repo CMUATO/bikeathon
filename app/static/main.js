@@ -21,6 +21,10 @@ function initTimer() {
   }, 1000);
 }
 
+function stripeTokenHandler(token) {
+  var a = 1;
+}
+
 function stripeSetup() {
   var stripe = Stripe('pk_test_6pRNASCoBOKtIshFeQd4XMUh');
 
@@ -86,6 +90,14 @@ function initDonate() {
   $("#cancel-button").click(function () {
     $("#payment-wrapper").fadeOut();
   })
+}
+
+function updateDistance() {
+  let url = "https://ff5c201f.ngrok.io/distance";
+  $.get(url, function (text) {
+    JSON.parse(text);
+    console.log();
+  });
 }
 
 window.addEventListener("DOMContentLoaded", function () {
