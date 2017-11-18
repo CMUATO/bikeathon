@@ -29,7 +29,7 @@ def postBikeData():
 #Return index.html
 @app.route('/')
 def index():
-    return render_template('index.html', key="")
+    return render_template('index.html', miles = 123, time = 123, money = 123)
 
 #Charge user
 @app.route('/charge', methods=['POST'])
