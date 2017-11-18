@@ -16,7 +16,7 @@ class Rider(object):
 		self.Thresold = Thresold
 		self.last_speed = 0
 		self.url = "https://facebook.com"
-		self.payload = {"name":self.name, "speed":self.last_speed, "time":time.time()}
+		self.payload = {"bikeid":self.name, "speed":self.last_speed, "time":time.time()}
 		self.distance = 0
 		self.last_push = time.time()
 		self.push_delay = push_delay
@@ -38,7 +38,7 @@ class Rider(object):
 	def Update_Payload(self):
 		self.Speed()
 		self.distance += self.circumfrence
-		self.payload = {"name":self.name, "distance":self.distance, "spped":self.last_speed,"time":time.time()}
+		self.payload = {"bikeid":self.name, "distance":self.distance, "spped":self.last_speed,"time":time.time()}
 
 
 	#Sends payload to server at url
