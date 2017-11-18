@@ -18,7 +18,6 @@ icalendar==3.9.1
 idna==2.6
 ipaddress==1.0.18
 itsdangerous==0.24
-jdcal==1.0
 Jinja2==2.9.6
 jmespath==0.9.0
 MarkupSafe==1.0
