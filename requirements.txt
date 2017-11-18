@@ -47,7 +47,6 @@ stevedore==1.10.0
 stripe==1.73.0
 tweepy==3.5.0
 twitter==1.17.1
-vboxapi==1.0
 virtualenv==13.1.2
 virtualenv-clone==0.2.6
 virtualenvwrapper==4.7.1
