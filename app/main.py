@@ -10,9 +10,12 @@ import ssl
 
 from db_manager import db, app
 
+distance = 0
+
 #Get speed and distance reading
 @app.route('/sensor', methods=['POST'])
 def postBikeData():
+    global distance
     jsonDict = request.get_json()
     print(jsonDict)
     #Throw error if data not included
@@ -20,9 +23,19 @@ def postBikeData():
         ('distance' not in jsonDict) or ('bikeid' not in jsonDict)):
         abort(400)
 
+    distance += jsonDict["distance"]
+
     print("SPEED", jsonDict['speed'], "DISTANCE",
           jsonDict['distance'], "BIKE_ID", jsonDict['bikeid'])
     return 'ok', 200
+
+#Get distance
+@app.route("/distance",methods=["GET"])
+def getDistance():
+    global distance
+    return json.dumps({"distance" : round(distance, 2)}), 200
+
+
 
 #Return index.html
 @app.route('/')
