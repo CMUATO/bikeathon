@@ -5,18 +5,32 @@
 
 import RPi.GPIO as GPIO
 from time import sleep     # this lets us have a time delay (see line 12)
+from datetime import datetime
+from datapusher import Rider
 
 hallPin = 17
+prevTime = datetime.now()
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(hallPin, GPIO.IN) 
+count = 0
+
+rider = Rider()
 
 
 def detectCycle(channel):
-	print "Magnet detected"
+	global prevTime
+	global count
+
+	currTime = datetime.now()
+	deltaTime = currTime - prevTime
+	# if (deltaTime.total_seconds() * 1000) >= 100:
+	# 	count += 1
+	# 	print count
+	# 	prevTime = currTime
+	rider.Changer()
 
 GPIO.add_event_detect(hallPin, GPIO.FALLING, callback=detectCycle)  
-
 
 
 try:  
