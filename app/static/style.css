@@ -181,7 +181,7 @@ body {
 }
 
 #payment-wrapper>form {
-  background-color: #c6e2e0;
+  background-color: #9ccbc7;
   position: absolute;
   max-width: 400px;
   max-height: 200px;
@@ -197,8 +197,8 @@ body {
 }
 
 #payment-wrapper>form label {
-  font-size: 1rem;
-  color: #525252;
+  font-size: inherit;
+  color: inherit;
 }
 
 #cancel-button {
