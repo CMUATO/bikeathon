@@ -1,4 +1,4 @@
 *.pyc
 
-backend/gsheets_secret.json
-backend/sheets.googleapis.com-python.json
+gsheets_secret.json
+sheets.googleapis.com-python.json
