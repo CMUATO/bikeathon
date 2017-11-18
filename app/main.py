@@ -2,7 +2,7 @@
 from __future__ import print_function
 
 from flask import Flask, abort, request, render_template
-from user import User
+#from user import User
 from flask_sqlalchemy import SQLAlchemy
 import stripe
 import json
