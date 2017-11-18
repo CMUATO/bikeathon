@@ -6,7 +6,7 @@ import random
 class Rider(object):
 	#name should be string
 	#NEED TO ADD URL TO BOTTOM
-	def __init__(self, name="Cool Chris", wheel_radius = 25, Thresold = 5000):
+	def __init__(self, name="Cool Chris", wheel_radius = 25, Thresold = 5000, push_delay = 5):
 		self.name = name
 		self.last_time = time.time()
 		self.time_change = 0
@@ -19,7 +19,7 @@ class Rider(object):
 		self.payload = {"name":self.name, "speed":self.last_speed}
 		self.distance = 0
 		self.last_push = time.time()
-		self.push_delay = 10
+		self.push_delay = push_delay
 
 	#Returns the amount of time since last cycle
 	#Updates the time of the Rider
