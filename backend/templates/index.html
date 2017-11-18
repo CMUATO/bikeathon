@@ -1,16 +1,25 @@
-{% extends "layout.html" %}
-{% block content %}
-  <form action="/charge" method="post">
-    <article>
-      <label>
-        <span>Amount is $5.00</span>
-      </label>
-    </article>
-
-    <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-            data-key="{{ key }}"
-            data-description="A Flask Charge"
-            data-amount="500"
-            data-locale="auto"></script>
-  </form>
-{% endblock %}
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>ATO Bike-A-Thon</title>
+    <link rel="stylesheet" type="text/css" href={{url_for('static',filename = "materialize.min.css")}}>
+    <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href={{url_for('static',filename= "style.css")}}>
+    <script src={{url_for('static',filename= "https://code.jquery.com/jquery-3.2.1.min.js")}}></script>
+    <script src="/static/materialize.min.js"></script>
+    <script src="/static/main.js"></script>
+  </head>
+  <body>
+    <div id="title"><img src="/static/ato.png" alt="ATO"/> Bike-A-Thon</div>
+    <div id="gif-wrap">
+      <img src="/static/bike.gif" alt="Bike"/>
+      <a class="waves-effect waves-light btn-large cyan darken-3">Donate</a>
+    </div>
+    <div id="stats">
+      <p><span id="distance" class="accent">{{miles}} miles</span> biked in <span id="time" class="accent">{{time}}</span></p>
+      <p><span id="money" class="accent">${{money}}</span> raised for Camp Kesem</p>
+    </div>
+  </body>
+</html>
