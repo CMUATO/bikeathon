@@ -53,7 +53,7 @@ class Rider(object):
 		if(not self.currently_hi and data>self.Thresold):
 			self.Update_Payload()
 			self.currently_hi = True
-		if(self.currently_hi and data<self.Thresold):
+		if(self.currently_hi and data<self.Thresold and time.time() - self.last_time >= .1):
 			self.currently_hi = False
 		#if(time.time() - self.last_push>self.push_delay):
 			#self.Push()
