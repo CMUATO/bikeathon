@@ -93,15 +93,24 @@ function initDonate() {
 }
 
 function updateDistance() {
-  let url = "https://ff5c201f.ngrok.io/distance";
+  let url = "https://06e2ed95.ngrok.io/distance";
   $.get(url, function (text) {
-    JSON.parse(text);
-    console.log();
+    let data = JSON.parse(text);
+    let distance = data["distance"];
+    $("#distance").html(`${distance} miles`);
   });
+}
+
+function initDistance() {
+  updateDistance();
+  let interval = setInterval(function () {
+    updateDistance();
+  }, 10000);
 }
 
 window.addEventListener("DOMContentLoaded", function () {
   stripeSetup();
   initTimer();
   initDonate();
+  initDistance();
 });
