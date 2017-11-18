@@ -55,22 +55,16 @@ class Rider(object):
 			self.currently_hi = True
 		if(self.currently_hi and data<self.Thresold):
 			self.currently_hi = False
-		if(time.time() - self.last_push>self.push_delay):
-			self.Push()
+		#if(time.time() - self.last_push>self.push_delay):
+			#self.Push()
 
 
 
 		
-#data is used to replicate changing threshold
 Rider1 = Rider()
-Rider2 = Rider()
-Rider3 = Rider()
-data = random.randint(4998,5002)
 while(True):
 	Rider1.Changer(data)
-	Rider2.Changer(data)
-	Rider3.Changer(data)
-	data = random.randint(4998,5002)
+
 	
 
 
