@@ -1,9 +1,7 @@
 import os
 from flask import Flask, render_template, request
 import stripe
-from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-import stripe
 import ssl
 
 stripe_keys = {
@@ -15,8 +13,6 @@ stripe.api_key = stripe_keys['secret_key']
 
 app = Flask(__name__)
 
-<<<<<<< Updated upstream
-=======
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 db = SQLAlchemy(app)
 
@@ -31,8 +27,6 @@ class User(db.Model):
         return '<User %r>' % self.username
 
 
-
->>>>>>> Stashed changes
 @app.route('/')
 def index():
     return render_template('index.html', key=stripe_keys['publishable_key'])
