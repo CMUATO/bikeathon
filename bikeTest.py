@@ -24,6 +24,7 @@ def detectCycle(channel):
 
 	currTime = datetime.now()
 	deltaTime = currTime - prevTime
+	print "checkpoint"
 	# if (deltaTime.total_seconds() * 1000) >= 100:
 	# 	count += 1
 	# 	print count
