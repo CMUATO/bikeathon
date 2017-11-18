@@ -37,7 +37,8 @@ class Rider(object):
 	#Updates speed to make sure accurate for payload
 	def Update_Payload(self):
 		self.Speed()
-		self.payload = {"name":self.name, "speed":self.last_speed}
+		self.distance += self.circumfrence
+		self.payload = {"name":self.name, "distance":self.distance}
 
 
 	#Sends payload to server at url
@@ -45,16 +46,14 @@ class Rider(object):
 	def Push(self):
 		r = requests.post(self.url, data=self.payload)
 		self.last_push = time.time()
+		self.distance = 0;
 
 	#Looks to see if data is freshly over data
 	#If is then sends speed of the average speed of wheel over
 	#Last rotation
-	def Changer(self,data):
-		if(not self.currently_hi and data>self.Thresold):
+	def Changer(self):
+		if(time.time() - self.last_time >= .1):
 			self.Update_Payload()
-			self.currently_hi = True
-		if(self.currently_hi and data<self.Thresold and time.time() - self.last_time >= .1):
-			self.currently_hi = False
 		#if(time.time() - self.last_push>self.push_delay):
 			#self.Push()
 
