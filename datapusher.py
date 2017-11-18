@@ -6,16 +6,15 @@ import random
 class Rider(object):
 	#name should be string
 	#NEED TO ADD URL TO BOTTOM
-	def __init__(self, name="Cool Chris", wheel_radius = 25, Thresold = 5000, push_delay = 5):
+	def __init__(self, name="Cool Chris", wheel_radius = 25, push_delay = 5):
 		self.name = name
 		self.last_time = time.time()
 		self.time_change = 0
 		self.wheel_radius = wheel_radius
 		self.circumfrence = 2*math.pi*self.wheel_radius
 		self.currently_hi = True
-		self.Thresold = Thresold
 		self.last_speed = 0
-		self.url = "https://facebook.com"
+		self.url = "4802ee8f.ngrok.io/sensor"
 		self.payload = {"bikeid":self.name, "speed":self.last_speed, "time":time.time()}
 		self.distance = 0
 		self.last_push = time.time()
