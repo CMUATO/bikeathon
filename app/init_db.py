@@ -5,13 +5,13 @@ from user import User
 db.create_all()
 
 
-users = [User(username='grant', school='cit'),
-         User(username='cchris', school='hss'),
-         User(username='brandon', school='scs'),
-         User(username='daniel', school='scs')]
+with open('user_list.txt', 'r') as f:
+    text = f.read()
 
 
-for user in users:
-    db.session.add(user)
+for line in text.splitlines():
+    items = line.split(',')
+    db.session.add(User(name=items[0], school=items[1], distance=0))
+
 
 db.session.commit()
