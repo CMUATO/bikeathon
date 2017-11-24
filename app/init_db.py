@@ -11,6 +11,7 @@ with open('user_list.txt', 'r') as f:
 
 for line in text.splitlines():
     items = line.split(',')
+    assert len(items) == 2
     db.session.add(User(name=items[0], school=items[1], distance=0))
 
 
