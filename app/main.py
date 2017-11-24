@@ -1,12 +1,7 @@
-#!flask/bin/python
-from __future__ import print_function
-
-
 from flask import Flask, abort, request, render_template, send_file, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 import stripe
 import json
-import ssl
 
 from db_manager import db, app
 
@@ -35,8 +30,6 @@ def getDistance():
     global distance
     return json.dumps({"distance" : round(distance, 2)}), 200
 
-
-
 #Return index.html
 @app.route('/')
 def index():
@@ -48,28 +41,58 @@ def send_static(path):
     return send_from_directory('static', path)
 
 #Charge user
-@app.route('/charge', methods=['POST'])
+@app.route('/charge-ajax', methods=['POST'])
 def charge():
-    # Amount in cents
-    amount = 500
+    amount = request.form["amount"] # already in cents
+    token = request.form["token"]
 
-    customer = stripe.Customer.create(
-        email='customer@example.com',
-        source=request.form['stripeToken']
-    )
+    try:
+        amount = int(amount)
+    except Exception as e:
+        result = {
+            "success" : 0,
+            "message" : 'Please enter a valid amount'
+        }
+        return json.dumps(result), 200
 
-    charge = stripe.Charge.create(
-        customer=customer.id,
-        amount=amount,
-        currency='usd',
-        description='Flask Charge'
-    )
+    if amount < 100:
+        result = {
+            "success" : 0,
+            "message" : 'Donation amount must be at least $1'
+        }
+        return json.dumps(result), 200
 
-    return render_template('charge.html', amount=amount)
+    try:
+        charge = stripe.Charge.create(
+            amount=amount,
+            currency='usd',
+            source=token,
+            description='ATO Bike-A-Thon donation'
+        )
+        result = {
+            "success" : 1,
+            "message" : ""
+        }
+        return json.dumps(result), 200
+    except stripe.error.CardError as e:
+        body = e.json_body
+        err  = body.get('error', {})
+        result = {
+            "success" : 0,
+            "message" : err.get('message')
+        }
+        return json.dumps(result), 200
+    except Exception as e:
+        result = {
+            "success" : 0,
+            "message" : "An error occurred"
+        }
+        return json.dumps(result), 200
 
 
 #Set up Stripe
-def setupStripe():
+@app.before_first_request
+def stripeSetup():
     # Set your secret key:
     # remember to change this to your live secret key in production
     # See your keys here: https://dashboard.stripe.com/account/apikeys
@@ -77,12 +100,6 @@ def setupStripe():
     configDict = json.loads(config)
     stripe.api_key = configDict['stripe_api_key']
 
-    # Token is created using Checkout or Elements!
-    # Get the payment token ID submitted by the form:
-    stripe.Charge.retrieve(
-      "ch_1BKZ5Q2eZvKYlo2CrmTJgJBF",
-      api_key="sk_test_BQokikJOvBiI2HlWgH4olfQ2"
-    )
     
 if __name__ == '__main__':
     app.run(debug=True)

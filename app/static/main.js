@@ -17,12 +17,24 @@ function initTimer() {
   let start = Date.parse("13 Nov 2017 16:00:00 UTC");
   updateTime(start);
   let interval = setInterval(function () {
-      updateTime(start);
+    updateTime(start);
   }, 1000);
 }
 
-function stripeTokenHandler(token) {
-  var a = 1;
+function stripeTokenHandler(token, amount) {
+  let params = {
+    token: token,
+    amount: amount
+  };
+  $.post("/charge-ajax", params, function (text) {
+    let data = JSON.parse(text);
+    if (data["success"] === 1) {
+      $("#payment-wrapper").fadeOut();
+      Materialize.toast('Thank you for your donation!', 10000);
+    } else {
+      $("#card-errors").text(data["message"]);
+    }
+  });
 }
 
 function stripeSetup() {
@@ -61,7 +73,7 @@ function stripeSetup() {
     if (event.error) {
       displayError.textContent = event.error.message;
     } else {
-      displayError.textContent = '';
+      displayError.innerHTML = '&nbsp;';
     }
   });
 
@@ -70,17 +82,39 @@ function stripeSetup() {
   form.addEventListener('submit', function(event) {
     event.preventDefault();
 
-    stripe.createToken(card).then(function(result) {
-      if (result.error) {
-        // Inform the user if there was an error
-        var errorElement = document.getElementById('card-errors');
-        errorElement.textContent = result.error.message;
-      } else {
-        // Send the token to your server
-        stripeTokenHandler(result.token);
-      }
-    });
+    $('#amount-errors').html('&nbsp;');
+
+    var amount = $('#amount').val();
+    amount = amount.replace(/\$/g, '').replace(/\,/g, '');
+
+    amount = parseFloat(amount);
+
+    if (isNaN(amount)) {
+      $('#amount-errors').text('Please enter a valid amount');
+    } else if (amount < 1.00) {
+      $('#amount-errors').text('Donation amount must be at least $1');
+    } else {
+      amount = Math.round(amount * 100);
+      stripe.createToken(card).then(function(result) {
+        if (result.error) {
+          // Inform the user if there was an error
+          var errorElement = document.getElementById('card-errors');
+          errorElement.textContent = result.error.message;
+        } else {
+          // Send the token to your server
+          stripeTokenHandler(result.token.id, amount);
+        }
+      });
+    }
   });
+}
+
+function processAmount() {
+  let elem = $("#amount");
+  let amount = parseFloat(elem.val());
+  if (!isNaN(amount)) {
+    elem.val(amount.toFixed(2));
+  }
 }
 
 function initDonate() {
@@ -89,11 +123,13 @@ function initDonate() {
   });
   $("#cancel-button").click(function () {
     $("#payment-wrapper").fadeOut();
-  })
+  });
+  processAmount();
+  $("#amount").change(processAmount);
 }
 
 function updateDistance() {
-  let url = "https://06e2ed95.ngrok.io/distance";
+  let url = "/distance";
   $.get(url, function (text) {
     let data = JSON.parse(text);
     let distance = data["distance"];

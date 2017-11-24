@@ -180,11 +180,11 @@ body {
   z-index: 2;
 }
 
-#payment-wrapper>form {
+#payment-form {
   background-color: #9ccbc7;
   position: absolute;
   max-width: 400px;
-  max-height: 200px;
+  max-height: 250px;
   top: 0;
   bottom: 0;
   left: 0;
@@ -196,13 +196,28 @@ body {
   box-sizing: border-box;
 }
 
-#payment-wrapper>form label {
+#payment-form label {
   font-size: inherit;
   color: inherit;
 }
 
-#cancel-button {
+#payment-form>h2 {
+  font-size: 1.2em;
+  text-align: center;
+  margin: 0;
+}
+
+#submit {
   float: right;
+}
+
+#amount {
+  background-color: white;
+  border-radius: 5px;
+  color: black;
+  padding-left: 10px;
+  box-sizing: border-box;
+  margin-bottom: 0;
 }
 
 .StripeElement {
@@ -225,4 +240,14 @@ body {
 
 .StripeElement--webkit-autofill {
   background-color: #fefde5 !important;
+}
+
+
+input[type='number'] {
+    -moz-appearance:textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
 }
