@@ -123,7 +123,7 @@ def stripeSetup():
 def initScheduler():
     wks = init_gsheet()
     def updateMoney():
-        DATABASE["cash"] = fetch_gsheet_total(wks) / 100
+        DATABASE["cash"] = fetch_gsheet_total(wks)
         DATABASE["venmo"] = fetch_venmo_balance() - DATABASE['start_venmo_bal']
     scheduler = BackgroundScheduler()
     scheduler.start()
