@@ -127,7 +127,10 @@ def initScheduler():
     wks = init_gsheet()
     def updateMoney():
         stats.cash = fetch_gsheet_total(wks)
-        stats.venmo = fetch_venmo_balance() - stats.start_venmo_bal
+        bal = fetch_venmo_balance()
+        if bal is not None:
+            # None means the token has expired
+            stats.venmo = bal - stats.start_venmo_bal
 
     schools = {'CMU': 0, 'CIT': 0, 'SCS': 0, 'HSS': 0,
                'TSB': 0, 'MCS': 0, 'CFA': 0}

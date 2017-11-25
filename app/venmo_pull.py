@@ -1,14 +1,11 @@
-import venmo, requests, logging
-
-
-logger = logging.getLogger('venmo.payment')
+import venmo, requests
 
 
 def fetch_venmo_balance():
     access_token = venmo.auth.get_access_token()
 
     if not access_token:
-        logger.warn('No access token. Configuring ...')
+        print('No access token. Configuring ...')
         if not venmo.auth.configure():
             return
         access_token = venmo.auth.get_access_token()
@@ -16,7 +13,12 @@ def fetch_venmo_balance():
     data = {'access_token': access_token}
     response = requests.get('https://api.venmo.com/v1/me', json=data)
 
-    return float(response.json()['data']['balance'])
+    try:
+        return float(response.json()['data']['balance'])
+    except KeyError:
+        print("Access token has expired. Please reauthorize with command "
+              "'venmo configure'. Returning None.")
+        return None
 
 
 if __name__ == '__main__':

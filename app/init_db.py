@@ -4,6 +4,8 @@ from stats import Stats
 
 from venmo_pull import fetch_venmo_balance
 
+import sys
+
 
 db.create_all()
 
@@ -24,11 +26,17 @@ for line in text.splitlines():
     db.session.add(User(name=items[0], school=items[1], distance=0))
 
 
+bal = fetch_venmo_balance()
+if bal is None:
+    print('fetch_venmo_balance returned None. Please reauthorize to fetch '
+          'initial venmo balance.')
+    sys.exit("Database initialization failed")
+
 db.session.add(Stats(distance=0,
                      cash=0,
                      venmo=0,
                      card=0,
-                     start_venmo_bal=fetch_venmo_balance(),
+                     start_venmo_bal=bal,
                      leader='No one',
                      school_leader='CMU'))
 
