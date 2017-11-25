@@ -8,19 +8,18 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
 from db_manager import db, app
+from user import User
+from stats import Stats
 
 from gsheets import init_gsheet, fetch_gsheet_total
 from venmo_pull import fetch_venmo_balance
 
 
-# Make this an actual database
-DATABASE = {
-    "distance"        : 0,
-    "cash"            : 0,
-    "venmo"           : 0,
-    "card"            : 0,
-    "start_venmo_bal" : 0,
-}
+if __name__ == '__main__':
+    # Here temporarily since the db is stored in memory currently
+    import init_db
+    stats = Stats.query.first()
+
 
 #Get speed and distance reading
 @app.route('/sensor', methods=['POST'])
@@ -32,7 +31,7 @@ def postBikeData():
         ('distance' not in jsonDict) or ('bikeid' not in jsonDict)):
         abort(400)
 
-    DATABASE["distance"] += jsonDict["distance"]
+    stats.distance += jsonDict["distance"]
 
     print("SPEED", jsonDict['speed'], "DISTANCE",
           jsonDict['distance'], "BIKE_ID", jsonDict['bikeid'])
@@ -42,10 +41,8 @@ def postBikeData():
 @app.route("/stats", methods=["GET"])
 def getStats():
     results = {
-        "distance" : round(DATABASE["distance"], 2),
-        "money" : "%.2f" % (DATABASE["cash"] +
-                            DATABASE["venmo"] +
-                            DATABASE["card"])
+        "distance" : round(stats.distance, 2),
+        "money" : "%.2f" % (stats.cash + stats.venmo + stats.card)
     }
     return json.dumps(results), 200
 
@@ -92,7 +89,7 @@ def charge():
             "success" : 1,
             "message" : ""
         }
-        DATABASE["card"] += amount / 100
+        stats.card += amount / 100
         return json.dumps(result), 200
     except stripe.error.CardError as e:
         body = e.json_body
@@ -123,8 +120,8 @@ def stripeSetup():
 def initScheduler():
     wks = init_gsheet()
     def updateMoney():
-        DATABASE["cash"] = fetch_gsheet_total(wks)
-        DATABASE["venmo"] = fetch_venmo_balance() - DATABASE['start_venmo_bal']
+        stats.cash = fetch_gsheet_total(wks)
+        stats.venmo = fetch_venmo_balance() - stats.start_venmo_bal
     scheduler = BackgroundScheduler()
     scheduler.start()
     scheduler.add_job(
