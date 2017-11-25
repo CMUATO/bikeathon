@@ -13,7 +13,7 @@ db.create_all()
 # My Name,SCS
 # Other Name,CIT
 # Another Person,HSS
-# It's Me,CIT
+# Guest,CMU
 # ...
 with open('user_list.txt', 'r') as f:
     text = f.read()
@@ -24,8 +24,13 @@ for line in text.splitlines():
     db.session.add(User(name=items[0], school=items[1], distance=0))
 
 
-bal = fetch_venmo_balance()
-db.session.add(Stats(distance=0, cash=0, venmo=0, card=0, start_venmo_bal=bal))
+db.session.add(Stats(distance=0,
+                     cash=0,
+                     venmo=0,
+                     card=0,
+                     start_venmo_bal=fetch_venmo_balance(),
+                     leader='No one',
+                     school_leader='CMU'))
 
 
 db.session.commit()

@@ -33,6 +33,12 @@ def postBikeData():
 
     stats.distance += jsonDict["distance"]
 
+    # Not sure what the bikeid's are, change if not 1 and 2
+    if (jsonDict['bikeid'] == 1) and (stats.rider1 is not None):
+        User.query.get(stats.rider1).distance += jsonDict["distance"]
+    if (jsonDict['bikeid'] == 2) and (stats.rider2 is not None):
+        User.query.get(stats.rider1).distance += jsonDict["distance"]
+
     print("SPEED", jsonDict['speed'], "DISTANCE",
           jsonDict['distance'], "BIKE_ID", jsonDict['bikeid'])
     return 'ok', 200
@@ -122,17 +128,46 @@ def initScheduler():
     def updateMoney():
         stats.cash = fetch_gsheet_total(wks)
         stats.venmo = fetch_venmo_balance() - stats.start_venmo_bal
+
+    schools = {'CMU': 0, 'CIT': 0, 'SCS': 0, 'HSS': 0,
+               'TSB': 0, 'MCS': 0, 'CFA': 0}
+    def updateLeaders():
+        leader = None
+        lead = 0
+        for user in User.query.all():
+            if user.distance > lead:
+                leader = user.name
+                lead = user.distance
+            schools[user.school] += user.distance
+        school_leader = None
+        school_lead = 0
+        for school in schools:
+            if schools[school] > school_lead:
+                school_leader = school
+        if leader is not None:
+            stats.leader = leader
+        if school_leader is not None:
+            stats.school_leader = school_leader
+
     scheduler = BackgroundScheduler()
     scheduler.start()
     scheduler.add_job(
         func=updateMoney,
         trigger=IntervalTrigger(seconds=10),
-        id='gsheets',
+        id='money',
         name='Update cash and venmo totals',
+        replace_existing=True)
+    scheduler.add_job(
+        func=updateLeaders,
+        trigger=IntervalTrigger(seconds=10),
+        id='leaders',
+        name='Update leaders in distance',
         replace_existing=True)
     # Shut down the scheduler when exiting the app
     atexit.register(lambda: scheduler.shutdown())
+
     updateMoney()
+    updateLeaders()
 
 @app.before_first_request
 def init():
