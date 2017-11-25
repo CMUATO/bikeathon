@@ -1,4 +1,3 @@
-#!flask/bin/python
 from __future__ import print_function
 
 
@@ -8,9 +7,10 @@ import stripe
 import json
 import ssl
 
-from db_manager import db, app
+from db_manager import db,app 
 
 distance = 0
+application = app
 
 #Get speed and distance reading
 @app.route('/sensor', methods=['POST'])
@@ -85,4 +85,4 @@ def setupStripe():
     )
     
 if __name__ == '__main__':
-    app.run(debug=True)
+    application.run(debug=True)
