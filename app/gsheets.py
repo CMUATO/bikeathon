@@ -13,13 +13,13 @@ def fetch_gsheet_total(wks):
     venmo_total = df.at['Venmo', 'Total']
     cash_total = df.at['Cash', 'Total']
     card_total = df.at['Card', 'Total']
-    # Expecting Stripe API to calculate card total itself
-    # Only report venmo and cash
-    # Probably will end up deleting the card option on the Google form
+    # Expecting card and venmo to be tracked automatically
+    # Only report cash
+    # Probably will end up deleting the extra options on the Google form
     # Unless we implement donating towards certain brothers
-    return venmo_total + cash_total
+    return cash_total
 
 
 if __name__ == "__main__":
     wks = init_gsheet()
-    print("Total money from Google Sheet: %d" % fetch_gsheet_total(wks))
+    print("Cash money from Google Sheet: %d" % fetch_gsheet_total(wks))

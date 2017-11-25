@@ -8,13 +8,18 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
 from db_manager import db, app
+
 from gsheets import init_gsheet, fetch_gsheet_total
+from venmo_pull import fetch_venmo_balance
+
 
 # Make this an actual database
 DATABASE = {
-    "distance" : 0,
-    "cash_venmo" : 0,
-    "cards" : 0
+    "distance"        : 0,
+    "cash"            : 0,
+    "venmo"           : 0,
+    "card"            : 0,
+    "start_venmo_bal" : 0,
 }
 
 #Get speed and distance reading
@@ -35,10 +40,12 @@ def postBikeData():
 
 #Get stats
 @app.route("/stats", methods=["GET"])
-def getDistance():
+def getStats():
     results = {
         "distance" : round(DATABASE["distance"], 2),
-        "money" : "%.2f" % (DATABASE["cash_venmo"] + DATABASE["cards"])
+        "money" : "%.2f" % (DATABASE["cash"] +
+                            DATABASE["venmo"] +
+                            DATABASE["card"])
     }
     return json.dumps(results), 200
 
@@ -85,7 +92,7 @@ def charge():
             "success" : 1,
             "message" : ""
         }
-        DATABASE["cards"] += amount / 100
+        DATABASE["card"] += amount / 100
         return json.dumps(result), 200
     except stripe.error.CardError as e:
         body = e.json_body
@@ -112,22 +119,23 @@ def stripeSetup():
     configDict = json.loads(config)
     stripe.api_key = configDict['stripe_api_key']
 
-# Initialize scheduler for updating money from gsheet
+# Initialize scheduler for updating money from gsheet and venmo
 def initScheduler():
-    # wks = init_gsheet()
+    wks = init_gsheet()
     def updateMoney():
-        print("Uncomment lines")
-        # DATABASE["cash_venmo"] = fetch_gsheet_total(wks) / 100
+        DATABASE["cash"] = fetch_gsheet_total(wks) / 100
+        DATABASE["venmo"] = fetch_venmo_balance() - DATABASE['start_venmo_bal']
     scheduler = BackgroundScheduler()
     scheduler.start()
     scheduler.add_job(
         func=updateMoney,
         trigger=IntervalTrigger(seconds=10),
         id='gsheets',
-        name='Update cash and venmo total from gsheet',
+        name='Update cash and venmo totals',
         replace_existing=True)
     # Shut down the scheduler when exiting the app
     atexit.register(lambda: scheduler.shutdown())
+    updateMoney()
 
 @app.before_first_request
 def init():

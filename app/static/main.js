@@ -14,7 +14,7 @@ function updateTime(start) {
 }
 
 function initTimer() {
-  let start = Date.parse("13 Nov 2017 16:00:00 UTC");
+  let start = Date.parse("25 Nov 2017 10:00:00 EST");
   updateTime(start);
   let interval = setInterval(function () {
     updateTime(start);
