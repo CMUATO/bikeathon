@@ -93,7 +93,7 @@ function initDonate() {
 }
 
 function updateDistance() {
-  let url = "https://06e2ed95.ngrok.io/distance";
+  let url = "http://flask-env.2rm2zjheap.us-east-1.elasticbeanstalk.com";
   $.get(url, function (text) {
     let data = JSON.parse(text);
     let distance = data["distance"];
