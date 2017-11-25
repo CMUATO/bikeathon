@@ -2,15 +2,24 @@ from flask import Flask, abort, request, render_template, send_file, send_from_d
 from flask_sqlalchemy import SQLAlchemy
 import stripe
 import json
+import atexit
+
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.interval import IntervalTrigger
 
 from db_manager import db, app
+from gsheets import init_gsheet, fetch_gsheet_total
 
-distance = 0
+# Make this an actual database
+DATABASE = {
+    "distance" : 0,
+    "cash_venmo" : 0,
+    "cards" : 0
+}
 
 #Get speed and distance reading
 @app.route('/sensor', methods=['POST'])
 def postBikeData():
-    global distance
     jsonDict = request.get_json()
     print(jsonDict)
     #Throw error if data not included
@@ -18,17 +27,20 @@ def postBikeData():
         ('distance' not in jsonDict) or ('bikeid' not in jsonDict)):
         abort(400)
 
-    distance += jsonDict["distance"]
+    DATABASE["distance"] += jsonDict["distance"]
 
     print("SPEED", jsonDict['speed'], "DISTANCE",
           jsonDict['distance'], "BIKE_ID", jsonDict['bikeid'])
     return 'ok', 200
 
-#Get distance
-@app.route("/distance",methods=["GET"])
+#Get stats
+@app.route("/stats", methods=["GET"])
 def getDistance():
-    global distance
-    return json.dumps({"distance" : round(distance, 2)}), 200
+    results = {
+        "distance" : round(DATABASE["distance"], 2),
+        "money" : "%.2f" % (DATABASE["cash_venmo"] + DATABASE["cards"])
+    }
+    return json.dumps(results), 200
 
 #Return index.html
 @app.route('/')
@@ -73,6 +85,7 @@ def charge():
             "success" : 1,
             "message" : ""
         }
+        DATABASE["cards"] += amount / 100
         return json.dumps(result), 200
     except stripe.error.CardError as e:
         body = e.json_body
@@ -91,7 +104,6 @@ def charge():
 
 
 #Set up Stripe
-@app.before_first_request
 def stripeSetup():
     # Set your secret key:
     # remember to change this to your live secret key in production
@@ -99,6 +111,28 @@ def stripeSetup():
     config = open("config.json").read()
     configDict = json.loads(config)
     stripe.api_key = configDict['stripe_api_key']
+
+# Initialize scheduler for updating money from gsheet
+def initScheduler():
+    # wks = init_gsheet()
+    def updateMoney():
+        print("Uncomment lines")
+        # DATABASE["cash_venmo"] = fetch_gsheet_total(wks) / 100
+    scheduler = BackgroundScheduler()
+    scheduler.start()
+    scheduler.add_job(
+        func=updateMoney,
+        trigger=IntervalTrigger(seconds=10),
+        id='gsheets',
+        name='Update cash and venmo total from gsheet',
+        replace_existing=True)
+    # Shut down the scheduler when exiting the app
+    atexit.register(lambda: scheduler.shutdown())
+
+@app.before_first_request
+def init():
+    stripeSetup()
+    initScheduler()
 
     
 if __name__ == '__main__':

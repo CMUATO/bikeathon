@@ -128,19 +128,21 @@ function initDonate() {
   $("#amount").change(processAmount);
 }
 
-function updateDistance() {
-  let url = "/distance";
+function updateStats() {
+  let url = "/stats";
   $.get(url, function (text) {
     let data = JSON.parse(text);
     let distance = data["distance"];
-    $("#distance").html(`${distance} miles`);
+    let money = data["money"];
+    $("#distance").text(`${distance} miles`);
+    $("#money").text(`$${money}`)
   });
 }
 
-function initDistance() {
-  updateDistance();
+function initStats() {
+  updateStats();
   let interval = setInterval(function () {
-    updateDistance();
+    updateStats();
   }, 10000);
 }
 
@@ -148,5 +150,5 @@ window.addEventListener("DOMContentLoaded", function () {
   stripeSetup();
   initTimer();
   initDonate();
-  initDistance();
+  initStats();
 });
