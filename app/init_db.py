@@ -10,6 +10,21 @@ import sys
 db.create_all()
 
 
+bal = fetch_venmo_balance()
+if bal is None:
+    print('fetch_venmo_balance returned None. Please reauthorize to fetch '
+          'initial venmo balance.')
+    sys.exit("Database initialization failed.")
+
+db.session.add(Stats(distance=0,
+                     cash=0,
+                     venmo=0,
+                     card=0,
+                     start_venmo_bal=bal,
+                     leader='No one',
+                     school_leader='CMU'))
+
+
 # Uses txt file 'user_list.txt'
 # Format as follows:
 # My Name,SCS
@@ -24,21 +39,6 @@ for line in text.splitlines():
     items = line.split(',')
     assert len(items) == 2
     db.session.add(User(name=items[0], school=items[1], distance=0))
-
-
-bal = fetch_venmo_balance()
-if bal is None:
-    print('fetch_venmo_balance returned None. Please reauthorize to fetch '
-          'initial venmo balance.')
-    sys.exit("Database initialization failed")
-
-db.session.add(Stats(distance=0,
-                     cash=0,
-                     venmo=0,
-                     card=0,
-                     start_venmo_bal=bal,
-                     leader='No one',
-                     school_leader='CMU'))
 
 
 db.session.commit()
