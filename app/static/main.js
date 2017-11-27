@@ -9,12 +9,18 @@ function updateTime(start) {
   minutes = "0" + String(minutes % 60);
   seconds = "0" + String(seconds % 60);
 
+  if (elapsed < 0) {
+    minutes = "00";
+    seconds = "00";
+    hours = 0;
+  }
+
   let display = `${hours}:${minutes.slice(-2)}:${seconds.slice(-2)}`;
   $("#time").html(display);
 }
 
 function initTimer() {
-  let start = Date.parse("25 Nov 2017 10:00:00 EST");
+  let start = Date.parse("29 Nov 2017 11:00:00 EST");
   updateTime(start);
   let interval = setInterval(function () {
     updateTime(start);
