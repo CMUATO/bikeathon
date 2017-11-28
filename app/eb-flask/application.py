@@ -20,7 +20,6 @@ if __name__ == '__main__':
     import init_db
     stats = Stats.query.first()
 
-distance = 0
 application = app
 
 #Get speed and distance reading
