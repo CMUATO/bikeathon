@@ -7,7 +7,7 @@
 
 }
 
-@media screen and (min-width: 1281px) {
+@media screen and (min-width: 1441px) {
   body {
     font-size: 3em;
   }
@@ -17,7 +17,16 @@
   }
   
   #gif-wrap {
-    top: 170px;
+    top: 200px;
+  }
+  
+  #stats {
+    top: 250px;
+  }
+  
+  #description {
+    font-size: 0.5em;
+    max-width: 800px;
   }
   
   #donate-box {
@@ -33,9 +42,17 @@
   }
 }
 
-@media screen and (min-width: 801px) and (max-width: 1280px) {
+@media screen and (min-width: 801px) and (max-width: 1440px) {
   #gif-wrap {
-    top: 130px;
+    top: 150px;
+  }
+  
+  #stats {
+    top: 150px;
+  }
+  
+  #description {
+    font-size: 0.7em;
   }
   
   body {
@@ -47,7 +64,7 @@
   }
 }
 
-@media screen and (max-width: 1280px) {
+@media screen and (max-width: 1440px) {
   #title {
     padding: 25px;
   }
@@ -64,7 +81,6 @@
 @media screen and (min-width: 801px) {
   #title {
     position: absolute;
-    z-index: 2;
   }
   
   #gif-wrap {
@@ -76,7 +92,6 @@
   #stats {
     position: absolute;
     left: 45%;
-    top: 25%;
     padding-right: 50px;
   }
 }
@@ -117,13 +132,14 @@
 
 @media screen and (max-width: 500px) {
   #title {
+    position: relative;
     font-size: 2em !important;
     padding-left: 0;
     padding-right: 0;
   }
   
   #gif-wrap {
-    top: 0;
+    top: -20px;
   }
 }
 
@@ -140,6 +156,7 @@ body {
   font-family: 'Lobster', cursive;
   text-align: center;
   width: 100%;
+  z-index: 2;
 }
 
 #title>img {
@@ -177,7 +194,7 @@ body {
   top: 0;
   width: 100%;
   height: 100%;
-  z-index: 2;
+  z-index: 3;
 }
 
 #payment-form {
