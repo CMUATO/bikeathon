@@ -1,3 +1,5 @@
+
+from __future__ import print_function
 from flask import Flask, abort, request, render_template, send_file, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 import stripe
@@ -20,6 +22,8 @@ if __name__ == '__main__':
     import init_db
     stats = Stats.query.first()
 
+distance = 0
+application = app
 
 #Get speed and distance reading
 @app.route('/sensor', methods=['POST'])
@@ -179,4 +183,4 @@ def init():
 
     
 if __name__ == '__main__':
-    app.run(debug=True)
+    application.run(debug=True)
