@@ -6,3 +6,5 @@ gsheets_secret.json
 sheets.googleapis.com-python.json
 
 user_list.txt
+
+config.json
