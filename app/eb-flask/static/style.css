@@ -175,6 +175,15 @@ body {
   max-width: 800px;
 }
 
+#description {
+  margin-bottom: 80px;
+}
+
+#footer {
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+
 #donate-box>p {
   margin: 0;
 }
