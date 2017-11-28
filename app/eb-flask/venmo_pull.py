@@ -1,14 +1,10 @@
-import venmo, requests
+import venmo, requests, json
 
 
 def fetch_venmo_balance():
-    access_token = venmo.auth.get_access_token()
-
-    if not access_token:
-        print('No access token. Configuring ...')
-        if not venmo.auth.configure():
-            return
-        access_token = venmo.auth.get_access_token()
+    config = open("config.json").read()
+    configDict = json.loads(config)
+    access_token = configDict['venmo_token']
 
     data = {'access_token': access_token}
     response = requests.get('https://api.venmo.com/v1/me', json=data)
