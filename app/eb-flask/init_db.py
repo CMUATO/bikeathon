@@ -20,6 +20,7 @@ db.session.add(Stats(distance=0,
                      cash=0,
                      venmo=0,
                      card=0,
+                     misc=0,
                      start_venmo_bal=bal,
                      leader='No one',
                      school_leader='CMU'))

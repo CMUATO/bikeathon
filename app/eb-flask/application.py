@@ -50,7 +50,7 @@ def postBikeData():
 def getStats():
     results = {
         "distance" : round(stats.distance, 2),
-        "money" : "%.2f" % (stats.cash + stats.venmo + stats.card)
+        "money" : "%.2f" % (stats.cash + stats.venmo + stats.card + stats.misc)
     }
     return json.dumps(results), 200
 
@@ -128,7 +128,7 @@ def stripeSetup():
 def initScheduler():
     wks = init_gsheet()
     def updateMoney():
-        stats.cash = fetch_gsheet_total(wks)
+        stats.cash, stats.misc = fetch_gsheet_total(wks)
         bal = fetch_venmo_balance()
         if bal is not None:
             # None means the token has expired
