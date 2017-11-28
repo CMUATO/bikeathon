@@ -8,7 +8,7 @@ class Stats(db.Model):
     cash = db.Column(db.Float, nullable=False)
     venmo = db.Column(db.Float, nullable=False)
     card = db.Column(db.Float, nullable=False)
-    start_venmo_bal = db.Column(db.Float, nullable=False)
+    # start_venmo_bal = db.Column(db.Float, nullable=False)
 
     # Riders can be nullable, if no one is on them
     # Init is None for riders
