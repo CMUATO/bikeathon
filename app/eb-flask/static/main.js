@@ -44,7 +44,7 @@ function stripeTokenHandler(token, amount) {
 }
 
 function stripeSetup() {
-  var stripe = Stripe('pk_test_6pRNASCoBOKtIshFeQd4XMUh');
+  var stripe = Stripe('pk_live_w5RQTH8w67TnaZHqNWHotDSL');
 
   // Create an instance of Elements
   var elements = stripe.elements();
