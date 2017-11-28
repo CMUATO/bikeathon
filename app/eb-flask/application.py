@@ -15,10 +15,7 @@ from gsheets import init_gsheet, fetch_gsheet_total
 from venmo_pull import fetch_venmo_balance
 
 
-if __name__ == '__main__':
-    # Here temporarily since the db is stored in memory currently
-    import init_db
-    stats = Stats.query.first()
+stats = Stats.query.first()
 
 application = app
 
