@@ -27,20 +27,24 @@ function initTimer() {
   }, 1000);
 }
 
+var donated = false;
 function stripeTokenHandler(token, amount) {
-  let params = {
-    token: token,
-    amount: amount
-  };
-  $.post("/charge-ajax", params, function (text) {
-    let data = JSON.parse(text);
-    if (data["success"] === 1) {
-      $("#payment-wrapper").fadeOut();
-      Materialize.toast('Thank you for your donation!', 10000);
-    } else {
-      $("#card-errors").text(data["message"]);
-    }
-  });
+  if (!donated) {
+    donated = true;
+    let params = {
+      token: token,
+      amount: amount
+    };
+    $.post("/charge-ajax", params, function (text) {
+      let data = JSON.parse(text);
+      if (data["success"] === 1) {
+        $("#payment-wrapper").fadeOut();
+        Materialize.toast('Thank you for your donation!', 10000);
+      } else {
+        $("#card-errors").text(data["message"]);
+      }
+    });
+  }
 }
 
 function stripeSetup() {
