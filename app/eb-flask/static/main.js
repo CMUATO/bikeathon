@@ -42,6 +42,7 @@ function stripeTokenHandler(token, amount) {
         Materialize.toast('Thank you for your donation!', 10000);
       } else {
         $("#card-errors").text(data["message"]);
+        donated = false;
       }
     });
   }
