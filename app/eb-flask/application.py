@@ -14,9 +14,12 @@ from stats import Stats
 from gsheets import init_gsheet, fetch_gsheet_total
 from venmo_pull import fetch_venmo_balance
 
+from flask_sslify import SSLify
+
 stats = Stats.query.first()
 
 application = app
+sslify = SSLify(application)
 
 #Get speed and distance reading
 @app.route('/sensor', methods=['POST'])
@@ -176,4 +179,4 @@ def init():
 
     
 if __name__ == '__main__':
-    application.run(debug=True)
+    application.run(debug=False)
