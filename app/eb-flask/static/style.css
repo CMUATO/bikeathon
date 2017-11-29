@@ -94,6 +94,10 @@
     left: 45%;
     padding-right: 50px;
   }
+
+  #stats>p {
+    line-height: 1;
+  }
 }
 
 @media screen and (max-width: 800px) {
@@ -175,8 +179,12 @@ body {
   max-width: 800px;
 }
 
+#stats {
+  z-index: 2;
+}
+
 #description {
-  margin-bottom: 80px;
+  margin-bottom: 2em;
 }
 
 #footer {
@@ -198,7 +206,7 @@ body {
 
 #payment-wrapper {
   background-color: rgba(0, 0, 0, 0.5);
-  position: absolute;
+  position: fixed;
   font-size: 1rem;
   top: 0;
   width: 100%;
