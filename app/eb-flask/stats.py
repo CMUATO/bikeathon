@@ -13,8 +13,8 @@ class Stats(db.Model):
 
     # Riders can be nullable, if no one is on them
     # Init is None for riders
-    rider1 = db.Column(db.String(50), nullable=True)
-    rider2 = db.Column(db.String(50), nullable=True)
+    # rider1 = db.Column(db.String(50), nullable=True)
+    # rider2 = db.Column(db.String(50), nullable=True)
 
     # Give dummy values to init these
     leader = db.Column(db.String(50), nullable=False)

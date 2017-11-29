@@ -1,5 +1,5 @@
 from db_manager import db
-from user import User
+# from user import User
 from stats import Stats
 
 from venmo_pull import fetch_venmo_balance
@@ -9,6 +9,9 @@ import sys
 
 def init_db():
     db.create_all()
+
+    db.session.query(Stats).delete()
+    # db.session.query(User).delete()
 
 
     bal = fetch_venmo_balance()
@@ -34,13 +37,13 @@ def init_db():
     # Another Person,HSS
     # Guest,CMU
     # ...
-    with open('user_list.txt', 'r') as f:
-        text = f.read()
+    # with open('user_list.txt', 'r') as f:
+    #     text = f.read()
 
-    for line in text.splitlines():
-        items = line.split(',')
-        assert len(items) == 2
-        db.session.add(User(name=items[0], school=items[1], distance=0))
+    # for line in text.splitlines():
+    #     items = line.split(',')
+    #     assert len(items) == 2
+    #     db.session.add(User(name=items[0], school=items[1], distance=0))
 
 
     db.session.commit()

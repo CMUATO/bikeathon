@@ -8,15 +8,13 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
 from db_manager import db, app
-from user import User
+# from user import User
 from stats import Stats
 
 from gsheets import init_gsheet, fetch_gsheet_total
 from venmo_pull import fetch_venmo_balance
 
 from flask_sslify import SSLify
-
-stats = Stats.query.first()
 
 application = app
 sslify = SSLify(application)
@@ -31,13 +29,17 @@ def postBikeData():
         ('distance' not in jsonDict) or ('bikeid' not in jsonDict)):
         abort(400)
 
+    stats = Stats.query.first()
+
     stats.distance += jsonDict["distance"]
 
     # Not sure what the bikeid's are, change if not 1 and 2
-    if (jsonDict['bikeid'] == 1) and (stats.rider1 is not None):
-        User.query.get(stats.rider1).distance += jsonDict["distance"]
-    if (jsonDict['bikeid'] == 2) and (stats.rider2 is not None):
-        User.query.get(stats.rider1).distance += jsonDict["distance"]
+    # if (jsonDict['bikeid'] == 1) and (stats.rider1 is not None):
+    #     User.query.get(stats.rider1).distance += jsonDict["distance"]
+    # if (jsonDict['bikeid'] == 2) and (stats.rider2 is not None):
+    #     User.query.get(stats.rider1).distance += jsonDict["distance"]
+
+    recommit_stats()
 
     print("SPEED", jsonDict['speed'], "DISTANCE",
           jsonDict['distance'], "BIKE_ID", jsonDict['bikeid'])
@@ -46,6 +48,7 @@ def postBikeData():
 #Get stats
 @app.route("/stats", methods=["GET"])
 def getStats():
+    stats = Stats.query.first()
     results = {
         "distance" : round(stats.distance, 2),
         "money" : "%.2f" % (stats.cash + stats.venmo + stats.card + stats.misc)
@@ -65,6 +68,7 @@ def send_static(path):
 #Charge user
 @app.route('/charge-ajax', methods=['POST'])
 def charge():
+    stats = Stats.query.first()
     amount = request.form["amount"] # already in cents
     token = request.form["token"]
 
@@ -96,6 +100,7 @@ def charge():
             "message" : ""
         }
         stats.card += amount / 100
+        recommit_stats()
         return json.dumps(result), 200
     except stripe.error.CardError as e:
         body = e.json_body
@@ -126,31 +131,35 @@ def stripeSetup():
 def initScheduler():
     wks = init_gsheet()
     def updateMoney():
+        stats = Stats.query.first()
         stats.cash, stats.misc = fetch_gsheet_total(wks)
         bal = fetch_venmo_balance()
         if bal is not None:
             # None means the token has expired
             stats.venmo = bal - stats.start_venmo_bal
+        recommit_stats()
 
-    schools = {'CMU': 0, 'CIT': 0, 'SCS': 0, 'HSS': 0,
-               'TSB': 0, 'MCS': 0, 'CFA': 0}
-    def updateLeaders():
-        leader = None
-        lead = 0
-        for user in User.query.all():
-            if user.distance > lead:
-                leader = user.name
-                lead = user.distance
-            schools[user.school] += user.distance
-        school_leader = None
-        school_lead = 0
-        for school in schools:
-            if schools[school] > school_lead:
-                school_leader = school
-        if leader is not None:
-            stats.leader = leader
-        if school_leader is not None:
-            stats.school_leader = school_leader
+    # schools = {'CMU': 0, 'CIT': 0, 'SCS': 0, 'HSS': 0,
+    #            'TSB': 0, 'MCS': 0, 'CFA': 0}
+    # def updateLeaders():
+    #     stats = Stats.query.first()
+    #     leader = None
+    #     lead = 0
+    #     for user in User.query.all():
+    #         if user.distance > lead:
+    #             leader = user.name
+    #             lead = user.distance
+    #         schools[user.school] += user.distance
+    #     school_leader = None
+    #     school_lead = 0
+    #     for school in schools:
+    #         if schools[school] > school_lead:
+    #             school_leader = school
+    #     if leader is not None:
+    #         stats.leader = leader
+    #     if school_leader is not None:
+    #         stats.school_leader = school_leader
+    #     recommit_stats()
 
     scheduler = BackgroundScheduler()
     scheduler.start()
@@ -160,22 +169,50 @@ def initScheduler():
         id='money',
         name='Update cash and venmo totals',
         replace_existing=True)
-    scheduler.add_job(
-        func=updateLeaders,
-        trigger=IntervalTrigger(seconds=10),
-        id='leaders',
-        name='Update leaders in distance',
-        replace_existing=True)
+    # scheduler.add_job(
+    #     func=updateLeaders,
+    #     trigger=IntervalTrigger(seconds=10),
+    #     id='leaders',
+    #     name='Update leaders in distance',
+    #     replace_existing=True)
     # Shut down the scheduler when exiting the app
     atexit.register(lambda: scheduler.shutdown())
 
     updateMoney()
-    updateLeaders()
+    # updateLeaders()
 
 @app.before_first_request
 def init():
     stripeSetup()
     initScheduler()
+
+def recommit_stats(distance=None,
+                   cash=None,
+                   venmo=None,
+                   card=None,
+                   misc=None,
+                   start_venmo_bal=None,
+                   leader=None,
+                   school_leader=None):
+    stats = Stats.query.first()
+    _distance = stats.distance if distance is None else distance
+    _cash = stats.cash if cash is None else cash
+    _venmo = stats.venmo if venmo is None else venmo
+    _card = stats.card if card is None else card
+    _misc = stats.misc if misc is None else misc
+    _start_venmo_bal = stats.start_venmo_bal if start_venmo_bal is None else start_venmo_bal
+    _leader = stats.leader if leader is None else leader
+    _school_leader = stats.school_leader if school_leader is None else school_leader
+    db.session.query(Stats).delete()
+    db.session.add(Stats(distance=_distance,
+                         cash=_cash,
+                         venmo=_venmo,
+                         card=_card,
+                         misc=_misc,
+                         start_venmo_bal=_start_venmo_bal,
+                         leader=_leader,
+                         school_leader=_school_leader))
+    db.session.commit()
 
     
 if __name__ == '__main__':
