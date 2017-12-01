@@ -1,7 +1,7 @@
 "use strict";
 
-function updateTime(start) {
-  let elapsed = Date.now() - start;
+function updateTime(start, end) {
+  let elapsed = Math.min(Date.now(), end) - start;
   let seconds = Math.floor(elapsed / 1000);
   let minutes = Math.floor(seconds / 60);
   let hours = Math.floor(minutes / 60);
@@ -21,9 +21,10 @@ function updateTime(start) {
 
 function initTimer() {
   let start = Date.parse("29 Nov 2017 11:00:00 EST");
-  updateTime(start);
+  let end = Date.parse("30 Nov 2017 13:30:00 EST");
+  updateTime(start, end);
   let interval = setInterval(function () {
-    updateTime(start);
+    updateTime(start, end);
   }, 1000);
 }
 
