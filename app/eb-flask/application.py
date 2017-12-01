@@ -50,8 +50,10 @@ def postBikeData():
 def getStats():
     stats = Stats.query.first()
     results = {
-        "distance" : round(stats.distance, 2),
-        "money" : "%.2f" % (stats.cash + stats.venmo + stats.card + stats.misc)
+        "distance": round(stats.distance, 2),
+        "money": "%.2f" % (stats.cash + stats.venmo + stats.card + stats.misc),
+        "card": stats.card, "venmo": stats.venmo,
+        "cash": stats.cash, "misc": stats.misc
     }
     return json.dumps(results), 200
 
