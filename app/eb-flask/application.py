@@ -133,13 +133,14 @@ def stripeSetup():
 def initScheduler():
     wks = init_gsheet()
     def updateMoney():
-        stats = Stats.query.first()
+        stats = db.session.query(Stats).first()
         stats.cash, stats.misc = fetch_gsheet_total(wks)
         bal = fetch_venmo_balance()
         if bal is not None:
             # None means the token has expired
             stats.venmo = bal - stats.start_venmo_bal
-        recommit_stats()
+        db.session.commit()
+        # recommit_stats()
 
     # schools = {'CMU': 0, 'CIT': 0, 'SCS': 0, 'HSS': 0,
     #            'TSB': 0, 'MCS': 0, 'CFA': 0}
