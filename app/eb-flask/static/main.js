@@ -144,7 +144,8 @@ function updateStats() {
   let url = "/stats";
   $.get(url, function (text) {
     let data = JSON.parse(text);
-    let distance = data["distance"];
+    //let distance = data["distance"];
+    let distance = 400;
     let money = data["money"];
     $("#distance").text(`${distance} miles`);
     $("#money").text(`$${money}`)
