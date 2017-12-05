@@ -70,7 +70,7 @@ def send_static(path):
 #Charge user
 @app.route('/charge-ajax', methods=['POST'])
 def charge():
-    stats = db.session.query(Stats).first()
+    # stats = db.session.query(Stats).first()
     amount = request.form["amount"] # already in cents
     token = request.form["token"]
 
@@ -101,8 +101,8 @@ def charge():
             "success" : 1,
             "message" : ""
         }
-        stats.card += amount / 100
-        db.session.commit()
+        # stats.card += amount / 100
+        # db.session.commit()
         return json.dumps(result), 200
     except stripe.error.CardError as e:
         body = e.json_body
