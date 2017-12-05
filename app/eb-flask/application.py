@@ -29,7 +29,7 @@ def postBikeData():
         ('distance' not in jsonDict) or ('bikeid' not in jsonDict)):
         abort(400)
 
-    stats = Stats.query.first()
+    stats = db.session.query(Stats).first()
 
     stats.distance += jsonDict["distance"]
 
@@ -39,7 +39,7 @@ def postBikeData():
     # if (jsonDict['bikeid'] == 2) and (stats.rider2 is not None):
     #     User.query.get(stats.rider1).distance += jsonDict["distance"]
 
-    recommit_stats()
+    db.session.commit()
 
     print("SPEED", jsonDict['speed'], "DISTANCE",
           jsonDict['distance'], "BIKE_ID", jsonDict['bikeid'])
@@ -48,7 +48,7 @@ def postBikeData():
 #Get stats
 @app.route("/stats", methods=["GET"])
 def getStats():
-    stats = Stats.query.first()
+    stats = db.session.query(Stats).first()
     results = {
         "distance": round(stats.distance, 2),
         "money": "%.2f" % (stats.cash + stats.venmo + stats.card + stats.misc),
@@ -70,7 +70,7 @@ def send_static(path):
 #Charge user
 @app.route('/charge-ajax', methods=['POST'])
 def charge():
-    stats = Stats.query.first()
+    stats = db.session.query(Stats).first()
     amount = request.form["amount"] # already in cents
     token = request.form["token"]
 
@@ -102,7 +102,7 @@ def charge():
             "message" : ""
         }
         stats.card += amount / 100
-        recommit_stats()
+        db.session.commit()
         return json.dumps(result), 200
     except stripe.error.CardError as e:
         body = e.json_body
@@ -140,12 +140,11 @@ def initScheduler():
             # None means the token has expired
             stats.venmo = bal - stats.start_venmo_bal
         db.session.commit()
-        # recommit_stats()
 
     # schools = {'CMU': 0, 'CIT': 0, 'SCS': 0, 'HSS': 0,
     #            'TSB': 0, 'MCS': 0, 'CFA': 0}
     # def updateLeaders():
-    #     stats = Stats.query.first()
+    #     stats = db.session.query(Stats).first()
     #     leader = None
     #     lead = 0
     #     for user in User.query.all():
@@ -162,7 +161,7 @@ def initScheduler():
     #         stats.leader = leader
     #     if school_leader is not None:
     #         stats.school_leader = school_leader
-    #     recommit_stats()
+    #     db.session.commit()
 
     scheduler = BackgroundScheduler()
     scheduler.start()
@@ -187,36 +186,7 @@ def initScheduler():
 @app.before_first_request
 def init():
     stripeSetup()
-    initScheduler()
+    # initScheduler()
 
-def recommit_stats(distance=None,
-                   cash=None,
-                   venmo=None,
-                   card=None,
-                   misc=None,
-                   start_venmo_bal=None,
-                   leader=None,
-                   school_leader=None):
-    stats = Stats.query.first()
-    _distance = stats.distance if distance is None else distance
-    _cash = stats.cash if cash is None else cash
-    _venmo = stats.venmo if venmo is None else venmo
-    _card = stats.card if card is None else card
-    _misc = stats.misc if misc is None else misc
-    _start_venmo_bal = stats.start_venmo_bal if start_venmo_bal is None else start_venmo_bal
-    _leader = stats.leader if leader is None else leader
-    _school_leader = stats.school_leader if school_leader is None else school_leader
-    db.session.query(Stats).delete()
-    db.session.add(Stats(distance=_distance,
-                         cash=_cash,
-                         venmo=_venmo,
-                         card=_card,
-                         misc=_misc,
-                         start_venmo_bal=_start_venmo_bal,
-                         leader=_leader,
-                         school_leader=_school_leader))
-    db.session.commit()
-
-    
 if __name__ == '__main__':
     application.run(debug=False)
