@@ -144,10 +144,8 @@ function updateStats() {
   let url = "/stats";
   $.get(url, function (text) {
     let data = JSON.parse(text);
-    //let distance = data["distance"];
-    let distance = 400.47;
-    // let money = data["money"];
-    let money = 1759.19;
+    let distance = data["distance"];
+    let money = data["money"];
     $("#distance").text(`${distance} miles`);
     $("#money").text(`$${money}`)
   });
@@ -162,7 +160,7 @@ function initStats() {
 
 window.addEventListener("DOMContentLoaded", function () {
   stripeSetup();
-  // initTimer();
+  initTimer();
   initDonate();
-  // initStats();
+  initStats();
 });
