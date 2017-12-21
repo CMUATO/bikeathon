@@ -1,8 +1,7 @@
-from flask import Flask, abort, request, render_template, send_file, send_from_directory
-from flask_sqlalchemy import SQLAlchemy
-import stripe
-import json
-import atexit
+import stripe, json, atexit
+
+from flask import abort, request, send_file, send_from_directory
+from flask_sslify import SSLify
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
@@ -13,8 +12,6 @@ from stats import Stats
 
 from gsheets import init_gsheet, fetch_gsheet_total
 from venmo_pull import fetch_venmo_balance
-
-from flask_sslify import SSLify
 
 application = app
 sslify = SSLify(application)
