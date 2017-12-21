@@ -13,8 +13,9 @@ from stats import Stats
 from gsheets import init_gsheet, fetch_gsheet_total
 from venmo_pull import fetch_venmo_balance
 
-application = app
-sslify = SSLify(application)
+# For https redirecting, only happens when debug=False
+# Doesn't work locally
+# sslify = SSLify(app)
 
 #Get speed and distance reading
 @app.route('/sensor', methods=['POST'])
@@ -186,4 +187,4 @@ def init():
     initScheduler()
 
 if __name__ == '__main__':
-    application.run(debug=True)
+    app.run(debug=False)
