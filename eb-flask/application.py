@@ -14,7 +14,7 @@ from gsheets import init_gsheet, fetch_gsheet_total
 from venmo_pull import fetch_venmo_balance
 
 # For https redirecting, only happens when debug=False
-# Doesn't work locally
+# Doesn't work on localhost
 # sslify = SSLify(app)
 
 #Get speed and distance reading
