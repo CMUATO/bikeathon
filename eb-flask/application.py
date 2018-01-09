@@ -13,6 +13,9 @@ from stats import Stats
 from gsheets import init_gsheet, fetch_gsheet_total
 from venmo_pull import fetch_venmo_balance
 
+# EB looks for an 'application' callable by default.
+application = app
+
 # For https redirecting, only happens when debug=False
 # Doesn't work on localhost
 # sslify = SSLify(app)
