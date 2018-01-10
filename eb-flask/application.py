@@ -41,6 +41,7 @@ def postBikeData():
     #     User.query.get(stats.rider1).distance += jsonDict["distance"]
 
     db.session.commit()
+    db.session.close()
 
     print("SPEED", jsonDict['speed'], "DISTANCE",
           jsonDict['distance'], "BIKE_ID", jsonDict['bikeid'])
@@ -56,6 +57,7 @@ def getStats():
         "card": stats.card, "venmo": stats.venmo,
         "cash": stats.cash, "misc": stats.misc
     }
+    db.session.close()
     return json.dumps(results), 200
 
 #Return index.html
@@ -104,6 +106,7 @@ def charge():
         stats = db.session.query(Stats).first()
         stats.card += amount / 100
         db.session.commit()
+        db.session.close()
         return json.dumps(result), 200
     except stripe.error.CardError as e:
         body = e.json_body
@@ -141,6 +144,7 @@ def initScheduler():
             # None means the token has expired
             stats.venmo = bal - stats.start_venmo_bal
         db.session.commit()
+        db.session.close()
 
     # schools = {'CMU': 0, 'CIT': 0, 'SCS': 0, 'HSS': 0,
     #            'TSB': 0, 'MCS': 0, 'CFA': 0}
@@ -163,6 +167,7 @@ def initScheduler():
     #     if school_leader is not None:
     #         stats.school_leader = school_leader
     #     db.session.commit()
+    #     db.session.close()
 
     scheduler = BackgroundScheduler()
     scheduler.start()

@@ -17,4 +17,4 @@ def fetch_gsheet_total(wks):
 
 if __name__ == "__main__":
     wks = init_gsheet()
-    print("Cash: %d\nMisc: %d" % fetch_gsheet_total(wks))
+    print("Cash: %d, Misc: %d" % fetch_gsheet_total(wks))
