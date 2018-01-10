@@ -10,8 +10,8 @@ def init_gsheet():
 
 def fetch_gsheet_total(wks):
     df = wks.get_as_df().set_index('Method')
-    cash_total = df.at['Cash', 'Total']
-    misc_total = df.at['Misc', 'Total']
+    cash_total = float(df.at['Cash', 'Total'])
+    misc_total = float(df.at['Misc', 'Total'])
     return cash_total, misc_total
 
 

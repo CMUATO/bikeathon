@@ -152,7 +152,7 @@ def initScheduler():
     #     stats = db.session.query(Stats).first()
     #     leader = None
     #     lead = 0
-    #     for user in User.query.all():
+    #     for user in db.session.query(User).all():
     #         if user.distance > lead:
     #             leader = user.name
     #             lead = user.distance
