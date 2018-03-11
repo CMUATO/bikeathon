@@ -1,2 +1,2 @@
 # bikeathon
-The main repository for ATO's 2017 Bikeathon
+The main repository for Alpha Tau Omega at Carnegie Mellon's Bikeathon event
