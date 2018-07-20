@@ -8,11 +8,8 @@ import sys
 
 
 def init_db():
+    db.drop_all()
     db.create_all()
-
-    db.session.query(Stats).delete()
-    # db.session.query(User).delete()
-
 
     bal = fetch_venmo_balance()
     if bal is None:
