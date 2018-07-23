@@ -1,12 +1,11 @@
 *.pyc
-
 .DS_Store
-
+config.json
+data.db
+user_list.txt
 gsheets_secret.json
 sheets.googleapis.com-python.json
 
-user_list.txt
-
-config.json
-
-data.db
+# Elastic Beanstalk Files
+.elasticbeanstalk
+.ebextensions
