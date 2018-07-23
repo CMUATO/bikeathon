@@ -1,10 +1,7 @@
 from app_manager import db
 from models import Stats, User
-
 from venmo_pull import fetch_venmo_balance
-
 import sys
-
 
 def init_db():
     db.drop_all()
@@ -12,8 +9,8 @@ def init_db():
 
     bal = fetch_venmo_balance()
     if bal is None:
-        print('fetch_venmo_balance returned None. Please reauthorize to fetch '
-              'initial venmo balance.')
+        print("fetch_venmo_balance returned None. Please reauthorize to fetch "
+              "initial venmo balance.")
         sys.exit("Database initialization failed.")
 
     db.session.add(Stats(distance=0,
@@ -24,7 +21,6 @@ def init_db():
                          start_venmo_bal=bal,
                          leader='No one',
                          school_leader='CMU'))
-
 
     # Uses txt file 'user_list.txt'
     # Format as follows:
@@ -41,9 +37,7 @@ def init_db():
     #     assert len(items) == 2
     #     db.session.add(User(name=items[0], school=items[1], distance=0))
 
-
     db.session.commit()
-
 
 if __name__ == '__main__':
     init_db()

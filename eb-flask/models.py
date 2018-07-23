@@ -1,14 +1,5 @@
 from app_manager import db
 
-class User(db.Model):
-    name = db.Column(db.String(50), unique=True, nullable=False,
-                     primary_key=True)
-    distance = db.Column(db.Integer, nullable=False)
-    school = db.Column(db.String(10), nullable = False)
-
-    def __repr__(self):
-        return '<User %r>' % self.name
-
 class Stats(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     distance = db.Column(db.Float, nullable=False)
@@ -29,3 +20,12 @@ class Stats(db.Model):
 
     def __repr__(self):
         return '<Stats %r>' % self.id
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+    distance = db.Column(db.Integer, nullable=False)
+    school = db.Column(db.String(10), nullable = False)
+
+    def __repr__(self):
+        return '<User %r>' % self.name

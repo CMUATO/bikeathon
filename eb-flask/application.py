@@ -1,30 +1,23 @@
 import stripe, json, atexit
 
 from flask import abort, request, send_file, send_from_directory
-from flask_sslify import SSLify
+from app_manager import db, app
+from models import Stats, User
+from gsheets import init_gsheet, fetch_gsheet_total
+from venmo_pull import fetch_venmo_balance
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
-from app_manager import db, app
-from models import Stats, User
-
-from gsheets import init_gsheet, fetch_gsheet_total
-from venmo_pull import fetch_venmo_balance
-
 # EB looks for an 'application' callable by default.
 application = app
 
-# For https redirecting, only happens when debug=False
-# Doesn't work on localhost
-# sslify = SSLify(app)
-
-#Get speed and distance reading
 @app.route('/sensor', methods=['POST'])
 def postBikeData():
+    # Get speed and distance reading
     jsonDict = request.get_json()
     print(jsonDict)
-    #Throw error if data not included
+    # Throw error if data not included
     if ((not jsonDict) or ('speed' not in jsonDict) or
         ('distance' not in jsonDict) or ('bikeid' not in jsonDict)):
         abort(400)
@@ -46,7 +39,6 @@ def postBikeData():
           jsonDict['distance'], "BIKE_ID", jsonDict['bikeid'])
     return 'ok', 200
 
-#Get stats
 @app.route("/stats", methods=["GET"])
 def getStats():
     stats = db.session.query(Stats).first()
@@ -59,12 +51,10 @@ def getStats():
     db.session.close()
     return json.dumps(results), 200
 
-#Return index.html
 @app.route('/')
 def index():
     return send_file('index.html')
 
-#Charge user
 @app.route('/charge-ajax', methods=['POST'])
 def charge():
     amount = request.form["amount"] # already in cents
@@ -118,7 +108,6 @@ def charge():
         return json.dumps(result), 200
 
 
-#Set up Stripe
 def stripeSetup():
     # Set your secret key:
     # remember to change this to your live secret key in production
@@ -127,8 +116,8 @@ def stripeSetup():
     configDict = json.loads(config)
     stripe.api_key = configDict['stripe_api_key']
 
-# Initialize scheduler for updating money from gsheet and venmo
 def initScheduler():
+    # Initialize scheduler for updating money from gsheet and venmo
     wks = init_gsheet()
     def updateMoney():
         stats = db.session.query(Stats).first()
