@@ -1,6 +1,5 @@
-from db_manager import db
-# from user import User
-from stats import Stats
+from app_manager import db
+from models import Stats, User
 
 from venmo_pull import fetch_venmo_balance
 

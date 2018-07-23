@@ -6,9 +6,8 @@ from flask_sslify import SSLify
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
-from db_manager import db, app
-# from user import User
-from stats import Stats
+from app_manager import db, app
+from models import Stats, User
 
 from gsheets import init_gsheet, fetch_gsheet_total
 from venmo_pull import fetch_venmo_balance
