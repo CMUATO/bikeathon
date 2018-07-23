@@ -16,13 +16,12 @@ application = app
 def postBikeData():
     # Get speed and distance reading
     jsonDict = request.get_json()
-    print(jsonDict)
     # Throw error if data not included
     if ((not jsonDict) or ('speed' not in jsonDict) or
         ('distance' not in jsonDict) or ('bikeid' not in jsonDict)):
         abort(400)
 
-    stats = db.session.query(Stats).first()
+    stats = Stats.query.first()
 
     stats.distance += jsonDict["distance"]
 
@@ -32,8 +31,8 @@ def postBikeData():
     # if (jsonDict['bikeid'] == 2) and (stats.rider2 is not None):
     #     User.query.get(stats.rider1).distance += jsonDict["distance"]
 
+    db.session.add(stats)
     db.session.commit()
-    db.session.close()
 
     print("SPEED", jsonDict['speed'], "DISTANCE",
           jsonDict['distance'], "BIKE_ID", jsonDict['bikeid'])
@@ -41,14 +40,13 @@ def postBikeData():
 
 @app.route("/stats", methods=["GET"])
 def getStats():
-    stats = db.session.query(Stats).first()
+    stats = Stats.query.first()
     results = {
         "distance": round(stats.distance, 2),
         "money": "%.2f" % (stats.cash + stats.venmo + stats.card + stats.misc),
         "card": stats.card, "venmo": stats.venmo,
         "cash": stats.cash, "misc": stats.misc
     }
-    db.session.close()
     return json.dumps(results), 200
 
 @app.route('/')
@@ -87,10 +85,10 @@ def charge():
             "success" : 1,
             "message" : ""
         }
-        stats = db.session.query(Stats).first()
+        stats = Stats.query.first()
         stats.card += amount / 100
+        db.session.add(stats)
         db.session.commit()
-        db.session.close()
         return json.dumps(result), 200
     except stripe.error.CardError as e:
         body = e.json_body
@@ -120,22 +118,22 @@ def initScheduler():
     # Initialize scheduler for updating money from gsheet and venmo
     wks = init_gsheet()
     def updateMoney():
-        stats = db.session.query(Stats).first()
+        stats = Stats.query.first()
         stats.cash, stats.misc = fetch_gsheet_total(wks)
         bal = fetch_venmo_balance()
         if bal is not None:
             # None means the token has expired
             stats.venmo = bal - stats.start_venmo_bal
+        db.session.add(stats)
         db.session.commit()
-        db.session.close()
 
     # schools = {'CMU': 0, 'CIT': 0, 'SCS': 0, 'HSS': 0,
     #            'TSB': 0, 'MCS': 0, 'CFA': 0}
     # def updateLeaders():
-    #     stats = db.session.query(Stats).first()
+    #     stats = Stats.query.first()
     #     leader = None
     #     lead = 0
-    #     for user in db.session.query(User).all():
+    #     for user in User.query.all():
     #         if user.distance > lead:
     #             leader = user.name
     #             lead = user.distance
@@ -149,8 +147,8 @@ def initScheduler():
     #         stats.leader = leader
     #     if school_leader is not None:
     #         stats.school_leader = school_leader
+    #     db.session.add(stats)
     #     db.session.commit()
-    #     db.session.close()
 
     scheduler = BackgroundScheduler()
     scheduler.start()
