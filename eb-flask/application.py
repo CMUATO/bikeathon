@@ -34,8 +34,6 @@ def postBikeData():
     db.session.add(stats)
     db.session.commit()
 
-    print("SPEED", jsonDict['speed'], "DISTANCE",
-          jsonDict['distance'], "BIKE_ID", jsonDict['bikeid'])
     return 'ok', 200
 
 @app.route("/stats", methods=["GET"])
