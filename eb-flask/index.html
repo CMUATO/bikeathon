@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+    <head>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-111884318-2"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'UA-111884318-2');
+        </script>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <title>ATO Bike-A-Thon</title>
+        <link rel="icon" href="static/bike.png">
+        <link rel="stylesheet" type="text/css" href="static/materialize.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
+        <link rel="stylesheet" type="text/css" href="static/style.css">
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://js.stripe.com/v3/"></script>
+        <script src="static/materialize.min.js"></script>
+        <script src="static/main.js"></script>
+    </head>
+    <body>
+        <div id="title"><img src="static/ato.png" alt="ATO"> Bike-A-Thon</div>
+        <div id="gif-wrap">
+            <img src="static/bike.gif" alt="Bike">
+            <div id="donate-box">
+                <a class="waves-effect waves-light btn-large cyan darken-3" id="donate-button">Donate</a>
+                <p>Venmo: @CMU-ATO</p>
+            </div>
+        </div>
+        <div id="stats">
+            <p><span id="distance" class="accent">0 miles</span> biked in <span id="time" class="accent">0:00:00</span></p>
+            <p><span id="money" class="accent">$0</span> raised for Camp Kesem</p>
+            <div id="description">
+                <p>The Alpha Tau Omega social fraternity at Carnegie Mellon is committed to supporting kids in need. Last year’s Bike-A-Thon raised over $700 for Shriners Children’s Hospital. This year, our goal is $1000 for Camp Kesem.</p>
+                <p>Camp Kesem helps children struggling with their parent’s cancer. They’re the largest such national organization dedicated to providing children with free, innovative, fun-filled programs that foster a lasting community.</p>
+                <p>Get a free 🍩 or 🍪 with your donation.</p>
+            </div>
+            <a href="http://cmuato.org" class="cyan-text text-darken-1">Learn more about CMU ATO</a>
+            <div id="footer">Animation by <a href="https://dribbble.com/shots/1964796-WinterFixie" target="_blank" class="cyan-text text-darken-1">Pat Grivet</a></div>
+        </div>
+        <div id="payment-wrapper" style="display: none">
+            <form action="/charge" method="post" id="payment-form">
+                <h2>Pay securely through Stripe</h2>
+                <div class="form-row">
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amount" value="2" min="1" step="0.01" class="validate">
+                </div>
+                <div id="amount-errors" role="alert">&nbsp;</div>
+                <div class="form-row">
+                    <label for="card-element">Credit or debit card</label>
+                    <div id="card-element">
+                    </div>
+                </div>
+                <div id="card-errors" role="alert">&nbsp;</div>
+                <a id="cancel-button" class="waves-effect waves-light btn grey darken-1">Cancel</a>
+                <button id="submit" class="waves-effect waves-light btn cyan darken-3">Donate</button>
+            </form>
+        </div>
+    </body>
+</html>

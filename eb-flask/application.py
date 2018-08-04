@@ -1,35 +1,27 @@
-from flask import Flask, abort, request, render_template, send_file, send_from_directory
-from flask_sqlalchemy import SQLAlchemy
-import stripe
-import json
-import atexit
+import stripe, json, atexit
+
+from flask import abort, request, send_file, send_from_directory
+from app_manager import db, app
+from models import Stats, User
+from gsheets import init_gsheet, fetch_gsheet_total
+from venmo_pull import fetch_venmo_balance
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
-from db_manager import db, app
-# from user import User
-from stats import Stats
-
-from gsheets import init_gsheet, fetch_gsheet_total
-from venmo_pull import fetch_venmo_balance
-
-from flask_sslify import SSLify
-
+# EB looks for an 'application' callable by default.
 application = app
-sslify = SSLify(application)
 
-#Get speed and distance reading
 @app.route('/sensor', methods=['POST'])
 def postBikeData():
+    # Get speed and distance reading
     jsonDict = request.get_json()
-    print(jsonDict)
-    #Throw error if data not included
+    # Throw error if data not included
     if ((not jsonDict) or ('speed' not in jsonDict) or
         ('distance' not in jsonDict) or ('bikeid' not in jsonDict)):
         abort(400)
 
-    stats = db.session.query(Stats).first()
+    stats = Stats.query.first()
 
     stats.distance += jsonDict["distance"]
 
@@ -39,16 +31,14 @@ def postBikeData():
     # if (jsonDict['bikeid'] == 2) and (stats.rider2 is not None):
     #     User.query.get(stats.rider1).distance += jsonDict["distance"]
 
+    db.session.add(stats)
     db.session.commit()
 
-    print("SPEED", jsonDict['speed'], "DISTANCE",
-          jsonDict['distance'], "BIKE_ID", jsonDict['bikeid'])
     return 'ok', 200
 
-#Get stats
 @app.route("/stats", methods=["GET"])
 def getStats():
-    stats = db.session.query(Stats).first()
+    stats = Stats.query.first()
     results = {
         "distance": round(stats.distance, 2),
         "money": "%.2f" % (stats.cash + stats.venmo + stats.card + stats.misc),
@@ -57,20 +47,12 @@ def getStats():
     }
     return json.dumps(results), 200
 
-#Return index.html
 @app.route('/')
 def index():
     return send_file('index.html')
 
-# Static files
-@app.route('/static/<path:path>')
-def send_static(path):
-    return send_from_directory('static', path)
-
-#Charge user
 @app.route('/charge-ajax', methods=['POST'])
 def charge():
-    # stats = db.session.query(Stats).first()
     amount = request.form["amount"] # already in cents
     token = request.form["token"]
 
@@ -101,8 +83,10 @@ def charge():
             "success" : 1,
             "message" : ""
         }
-        # stats.card += amount / 100
-        # db.session.commit()
+        stats = Stats.query.first()
+        stats.card += amount / 100
+        db.session.add(stats)
+        db.session.commit()
         return json.dumps(result), 200
     except stripe.error.CardError as e:
         body = e.json_body
@@ -120,7 +104,6 @@ def charge():
         return json.dumps(result), 200
 
 
-#Set up Stripe
 def stripeSetup():
     # Set your secret key:
     # remember to change this to your live secret key in production
@@ -129,22 +112,23 @@ def stripeSetup():
     configDict = json.loads(config)
     stripe.api_key = configDict['stripe_api_key']
 
-# Initialize scheduler for updating money from gsheet and venmo
 def initScheduler():
+    # Initialize scheduler for updating money from gsheet and venmo
     wks = init_gsheet()
     def updateMoney():
-        stats = db.session.query(Stats).first()
+        stats = Stats.query.first()
         stats.cash, stats.misc = fetch_gsheet_total(wks)
         bal = fetch_venmo_balance()
         if bal is not None:
             # None means the token has expired
             stats.venmo = bal - stats.start_venmo_bal
+        db.session.add(stats)
         db.session.commit()
 
     # schools = {'CMU': 0, 'CIT': 0, 'SCS': 0, 'HSS': 0,
     #            'TSB': 0, 'MCS': 0, 'CFA': 0}
     # def updateLeaders():
-    #     stats = db.session.query(Stats).first()
+    #     stats = Stats.query.first()
     #     leader = None
     #     lead = 0
     #     for user in User.query.all():
@@ -161,6 +145,7 @@ def initScheduler():
     #         stats.leader = leader
     #     if school_leader is not None:
     #         stats.school_leader = school_leader
+    #     db.session.add(stats)
     #     db.session.commit()
 
     scheduler = BackgroundScheduler()
@@ -186,7 +171,7 @@ def initScheduler():
 @app.before_first_request
 def init():
     stripeSetup()
-    # initScheduler()
+    initScheduler()
 
 if __name__ == '__main__':
-    application.run(debug=False)
+    app.run(debug=False)

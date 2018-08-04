@@ -17,7 +17,6 @@ count = 0
 
 rider = Rider()
 
-
 def detectCycle(channel):
 	global prevTime
 	global count
@@ -32,7 +31,6 @@ def detectCycle(channel):
 	rider.Changer()
 
 GPIO.add_event_detect(hallPin, GPIO.FALLING, callback=detectCycle)  
-
 
 try:  
     print "Detecting bike cycles."

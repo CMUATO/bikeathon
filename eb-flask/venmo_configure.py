@@ -1,6 +1,5 @@
 import venmo, json
 
-
 def config_venmo():
     if not venmo.auth.configure():
         print("Venmo configuration failed.")
@@ -15,7 +14,6 @@ def config_venmo():
     open("config.json", "w").write(configjson)
 
     return access_token
-
 
 if __name__ == '__main__':
     print(config_venmo())

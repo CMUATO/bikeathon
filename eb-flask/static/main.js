@@ -1,19 +1,13 @@
 "use strict";
 
 function updateTime(start, end) {
-  let elapsed = Math.min(Date.now(), end) - start;
+  let elapsed = Math.max(Math.min(Date.now(), end) - start, 0);
   let seconds = Math.floor(elapsed / 1000);
   let minutes = Math.floor(seconds / 60);
   let hours = Math.floor(minutes / 60);
 
   minutes = "0" + String(minutes % 60);
   seconds = "0" + String(seconds % 60);
-
-  if (elapsed < 0) {
-    minutes = "00";
-    seconds = "00";
-    hours = 0;
-  }
 
   let display = `${hours}:${minutes.slice(-2)}:${seconds.slice(-2)}`;
   $("#time").html(display);
@@ -144,10 +138,8 @@ function updateStats() {
   let url = "/stats";
   $.get(url, function (text) {
     let data = JSON.parse(text);
-    //let distance = data["distance"];
-    let distance = 400.47;
-    // let money = data["money"];
-    let money = 1759.19;
+    let distance = data["distance"];
+    let money = data["money"];
     $("#distance").text(`${distance} miles`);
     $("#money").text(`$${money}`)
   });
@@ -162,7 +154,7 @@ function initStats() {
 
 window.addEventListener("DOMContentLoaded", function () {
   stripeSetup();
-  // initTimer();
+  initTimer();
   initDonate();
-  // initStats();
+  initStats();
 });
