@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+import json
 from datapusher import Rider
 
 hallPin = 3
