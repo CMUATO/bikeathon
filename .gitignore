@@ -1,8 +1,8 @@
 *.pyc
 .DS_Store
 config.json
+piconfig.json
 data.db
-user_list.txt
 gsheets_secret.json
 sheets.googleapis.com-python.json
 
