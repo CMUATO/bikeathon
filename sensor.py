@@ -25,6 +25,7 @@ try:
             if last == 1:
                 count += 1
                 print(count)
+                rider.Changer()
             last = 0
 finally:
     GPIO.cleanup()

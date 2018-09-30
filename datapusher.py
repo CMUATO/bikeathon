@@ -30,8 +30,11 @@ class Rider(object):
 
     def Push(self):
         """Sends payload to server at url and updates local json"""
+        print("Pushing...")
         headers = {'content-type': 'application/json'}
-        requests.post(self.url, data=json.dumps(self.payload), headers=headers)
+        r = requests.post(self.url, data=json.dumps(self.payload),
+            headers=headers)
+        print(r)
         self.last_push = time.time()
 
         with open("piconfig.json", "r") as file:
