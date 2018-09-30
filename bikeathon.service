@@ -1,0 +1,11 @@
+[Unit]
+Description=Bikeathon Sensor
+After=multi-user.target
+
+[Service]
+Type=idle
+WorkingDirectory=/INSERT/ABS/PATH/TO/THIS/DIR
+ExecStart=/usr/bin/python sensor.py &
+
+[Install]
+WantedBy=multi-user.target
