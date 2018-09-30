@@ -12,8 +12,9 @@ with open("piconfig.json", "r") as file:
     configDict = json.loads(configjson)
     uid = configDict["uid"]
     wheel_radius = configDict["wheel_radius"]
+    distance = configDict["distance"]
 
-rider = Rider(uid=uid, wheel_radius=wheel_radius)
+rider = Rider(uid=uid, wheel_radius=wheel_radius, distance=distance)
 
 try:
     print("Detecting bike cycles...")

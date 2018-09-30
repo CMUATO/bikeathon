@@ -1,7 +1,7 @@
 import time, math, requests, json
 
 class Rider(object):
-    def __init__(self, uid, wheel_radius):
+    def __init__(self, uid, wheel_radius, distance=0):
         """Wheel radius in inches"""
         self.uid = uid
 
@@ -16,7 +16,7 @@ class Rider(object):
         self.url = "%s/sensor" % url
         self.password = password
 
-        self.distance = 0
+        self.distance = distance
         self.payload = dict(bikeid=self.uid,
                             distance=self.distance,
                             password=self.password)
