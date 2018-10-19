@@ -5,9 +5,7 @@ import sys
 
 def init_db():
     db.drop_all()
-    print("woah")
     db.create_all()
-    print("nelly")
 
     bal = fetch_venmo_balance()
     if bal is None:
@@ -15,7 +13,6 @@ def init_db():
               "initial venmo balance.")
         sys.exit("Database initialization failed.")
 
-    print("fuck")
     db.session.add(Stats(distance=0,
                          distance1=0,
                          distance2=0,
@@ -24,7 +21,6 @@ def init_db():
                          card=0,
                          misc=0,
                          start_venmo_bal=bal))
-    print("me")
     db.session.commit()
 
 if __name__ == '__main__':

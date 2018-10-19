@@ -72,14 +72,14 @@ def charge():
             "success" : 0,
             "message" : 'Please enter a valid amount'
         }
-        return json.dumps(result), 200
+        return json.dumps(result), 400
 
     if amount < 100:
         result = {
             "success" : 0,
             "message" : 'Donation amount must be at least $1'
         }
-        return json.dumps(result), 200
+        return json.dumps(result), 400
 
     try:
         charge = stripe.Charge.create(
@@ -105,14 +105,14 @@ def charge():
             "success" : 0,
             "message" : err.get('message')
         }
-        return json.dumps(result), 200
+        return json.dumps(result), 400
 
     except Exception as e:
         result = {
             "success" : 0,
             "message" : "An error occurred"
         }
-        return json.dumps(result), 200
+        return json.dumps(result), 400
 
 
 def stripeSetup():
