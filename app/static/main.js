@@ -32,6 +32,7 @@ function stripeTokenHandler(token, amount, donor, email) {
       donor: donor,
       email: email
     };
+    Materialize.toast("Processing...", 1000);
     $.post("/charge-ajax", params, function (text) {
       let data = JSON.parse(text);
       if (data["success"] === 1) {
