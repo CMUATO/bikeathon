@@ -23,12 +23,14 @@ function initTimer() {
 }
 
 var donated = false;
-function stripeTokenHandler(token, amount) {
+function stripeTokenHandler(token, amount, donor, email) {
   if (!donated) {
     donated = true;
     let params = {
       token: token,
-      amount: amount
+      amount: amount,
+      donor: donor,
+      email: email
     };
     $.post("/charge-ajax", params, function (text) {
       let data = JSON.parse(text);
@@ -79,7 +81,7 @@ function stripeSetup() {
     if (event.error) {
       displayError.textContent = event.error.message;
     } else {
-      displayError.innerHTML = '&nbsp;';
+      displayError.innerHTML = '';
     }
   });
 
@@ -88,7 +90,7 @@ function stripeSetup() {
   form.addEventListener('submit', function(event) {
     event.preventDefault();
 
-    $('#amount-errors').html('&nbsp;');
+    $('#amount-errors').html('');
 
     var amount = $('#amount').val();
     amount = amount.replace(/\$/g, '').replace(/\,/g, '');
@@ -108,7 +110,7 @@ function stripeSetup() {
           errorElement.textContent = result.error.message;
         } else {
           // Send the token to your server
-          stripeTokenHandler(result.token.id, amount);
+          stripeTokenHandler(result.token.id, amount, $('#donor').val(), $('#email').val());
         }
       });
     }
