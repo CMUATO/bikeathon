@@ -1,4 +1,4 @@
-import stripe, json, atexit
+import re, stripe, json, atexit
 
 from flask import request, render_template
 from flask_mail import Message
@@ -63,12 +63,20 @@ def getStats():
     }
     return json.dumps(results), 200
 
-@app.route("/charge-ajax", methods=["POST"])
+email_pattern = r"""(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])"""
+email_regex = re.compile(email_pattern)
+def validate_email(text):
+    match = email_regex.match(text.strip())
+    if match is not None:
+        return match.group(0)
+    return None
+
+@app.route('/charge-ajax', methods=['POST'])
 def charge():
     amount = request.form["amount"] # already in cents
     token = request.form["token"]
     name = request.form["donor"]
-    email = request.form["email"]
+    email = validate_email(request.form["email"])
 
     try:
         amount = int(amount)
@@ -98,9 +106,10 @@ def charge():
             "message" : ""
         }
 
-        subject = "Thank you for donating"
-        html = render_template("email.html", name=donor, amount=amount / 100)
-        send_email(email, subject, html)
+        if email is not None:
+            subject = "Thank you for donating"
+            html = render_template("email.html", name=name, amount=amount/100)
+            send_email(email, subject, html)
 
         stats = Stats.query.first()
         stats.card += amount / 100
