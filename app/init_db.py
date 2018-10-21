@@ -23,5 +23,5 @@ def init_db():
                          start_venmo_bal=bal))
     db.session.commit()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     init_db()

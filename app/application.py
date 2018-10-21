@@ -1,7 +1,9 @@
 import stripe, json, atexit
 
-from flask import abort, request, send_file, send_from_directory
-from app_manager import db, app
+from flask import request, render_template
+from flask_mail import Message
+
+from app_manager import db, app, mail
 from models import Stats
 from gsheets import init_gsheet, fetch_gsheet_total
 from venmo_pull import fetch_venmo_balance
@@ -9,35 +11,36 @@ from venmo_pull import fetch_venmo_balance
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
-# EB looks for an 'application' callable by default.
+# EB looks for an "application" callable by default.
 application = app
 
-@app.route('/')
+@app.route("/")
 def index():
-    return send_file('index.html')
+    return render_template("index.html")
 
-@app.route('/sensor', methods=['POST'])
+@app.route("/sensor", methods=["POST"])
 def postBikeData():
     jsonDict = request.get_json()
 
     # Throw error if data not included
-    if ((not jsonDict) or ('distance' not in jsonDict) or
-        ('password' not in jsonDict) or ('bikeid' not in jsonDict)):
+    if ((not jsonDict) or ("distance" not in jsonDict) or
+        ("password" not in jsonDict) or ("bikeid" not in jsonDict)):
         return "missing data", 400
 
     with open("config.json", "r") as file:
         config = file.read()
         configDict = json.loads(config)
-        password = configDict['post_password']
+        password = configDict["post_password"]
 
     if jsonDict["password"] != password:
         return "incorrect password", 400
 
     stats = Stats.query.first()
 
-    if (jsonDict['bikeid'] == 1):
+    # set the distance to the new total
+    if (jsonDict["bikeid"] == 1):
         stats.distance1 = jsonDict["distance"]
-    elif (jsonDict['bikeid'] == 2):
+    elif (jsonDict["bikeid"] == 2):
         stats.distance2 = jsonDict["distance"]
     else:
         return "bad bikeid", 400
@@ -47,7 +50,7 @@ def postBikeData():
     db.session.add(stats)
     db.session.commit()
 
-    return 'ok', 200
+    return "ok", 200
 
 @app.route("/stats", methods=["GET"])
 def getStats():
@@ -60,38 +63,45 @@ def getStats():
     }
     return json.dumps(results), 200
 
-@app.route('/charge-ajax', methods=['POST'])
+@app.route("/charge-ajax", methods=["POST"])
 def charge():
     amount = request.form["amount"] # already in cents
     token = request.form["token"]
+    name = request.form["donor"]
+    email = request.form["email"]
 
     try:
         amount = int(amount)
     except Exception as e:
         result = {
             "success" : 0,
-            "message" : 'Please enter a valid amount'
+            "message" : "Please enter a valid amount"
         }
         return json.dumps(result), 400
 
     if amount < 100:
         result = {
             "success" : 0,
-            "message" : 'Donation amount must be at least $1'
+            "message" : "Donation amount must be at least $1"
         }
         return json.dumps(result), 400
 
     try:
         charge = stripe.Charge.create(
             amount=amount,
-            currency='usd',
+            currency="usd",
             source=token,
-            description='ATO Bike-A-Thon donation'
+            description="ATO Bike-A-Thon donation"
         )
         result = {
             "success" : 1,
             "message" : ""
         }
+
+        subject = "Thank you for donating"
+        html = render_template("email.html", name=donor, amount=amount / 100)
+        send_email(email, subject, html)
+
         stats = Stats.query.first()
         stats.card += amount / 100
         db.session.add(stats)
@@ -100,10 +110,10 @@ def charge():
 
     except stripe.error.CardError as e:
         body = e.json_body
-        err  = body.get('error', {})
+        err  = body.get("error", {})
         result = {
             "success" : 0,
-            "message" : err.get('message')
+            "message" : err.get("message")
         }
         return json.dumps(result), 400
 
@@ -114,6 +124,9 @@ def charge():
         }
         return json.dumps(result), 400
 
+def send_email(email, subject, html):
+    msg = Message(subject, recipients=[email], html=html)
+    mail.send(msg)
 
 def stripeSetup():
     # Set your secret key:
@@ -122,7 +135,7 @@ def stripeSetup():
     with open("config.json") as file:
         config = file.read()
         configDict = json.loads(config)
-        stripe.api_key = configDict['stripe_api_key']
+        stripe.api_key = configDict["stripe_api_key"]
 
 def initScheduler():
     # Initialize scheduler for updating money from gsheet and venmo
@@ -142,8 +155,8 @@ def initScheduler():
     scheduler.add_job(
         func=updateMoney,
         trigger=IntervalTrigger(seconds=10),
-        id='money',
-        name='Update cash and venmo totals',
+        id="money",
+        name="Update cash and venmo totals",
         replace_existing=True)
 
     # Shut down the scheduler when exiting the app
@@ -156,5 +169,5 @@ def init():
     stripeSetup()
     initScheduler()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)

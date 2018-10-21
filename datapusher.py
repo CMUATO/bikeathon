@@ -11,8 +11,8 @@ class Rider(object):
 
         config = open("app/config.json").read()
         configDict = json.loads(config)
-        url = configDict['url']
-        password = configDict['post_password']
+        url = configDict["url"]
+        password = configDict["post_password"]
         self.url = "%s/sensor" % url
         self.password = password
 
@@ -31,7 +31,7 @@ class Rider(object):
     def Push(self):
         """Sends payload to server at url and updates local json"""
         print("Pushing...")
-        headers = {'content-type': 'application/json'}
+        headers = {"content-type": "application/json"}
         r = requests.post(self.url, data=json.dumps(self.payload),
             headers=headers)
         print(r)
