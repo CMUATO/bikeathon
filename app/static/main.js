@@ -38,6 +38,7 @@ function stripeTokenHandler(token, amount, donor, email) {
       if (data["success"] === 1) {
         $("#payment-wrapper").fadeOut();
         Materialize.toast('Thank you for your donation!', 10000);
+        donated = false; // reset so they can donate again without refreshing
       } else {
         $("#card-errors").text(data["message"]);
         donated = false;
