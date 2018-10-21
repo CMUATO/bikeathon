@@ -1,6 +1,6 @@
 import re, stripe, json, atexit
 
-from flask import request, render_template
+from flask import request, render_template, send_file
 from flask_mail import Message
 
 from app_manager import db, app, mail
@@ -16,7 +16,7 @@ application = app
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return send_file("templates/index.html")
 
 @app.route("/sensor", methods=["POST"])
 def postBikeData():
