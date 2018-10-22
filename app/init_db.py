@@ -7,12 +7,7 @@ def init_db():
     db.drop_all()
     db.create_all()
 
-    bal = fetch_venmo_balance()
-    if bal is None:
-        print("fetch_venmo_balance returned None. Please reauthorize to fetch "
-              "initial venmo balance.")
-        sys.exit("Database initialization failed.")
-
+    bal = get_bal()
     db.session.add(Stats(distance=0,
                          distance1=0,
                          distance2=0,
@@ -23,5 +18,18 @@ def init_db():
                          start_venmo_bal=bal))
     db.session.commit()
 
-if __name__ == "__main__":
-    init_db()
+def get_bal():
+    bal = fetch_venmo_balance()
+    if bal is None:
+        print("fetch_venmo_balance returned None. Please reauthorize to fetch "
+              "initial venmo balance.")
+        sys.exit("Database manipulation failed.")
+    return bal
+
+def reset_venmo(bal=None):
+    if bal is None:
+        bal = get_bal()
+    stats = Stats.query.first()
+    stats.start_venmo_bal = bal
+    db.session.add(stats)
+    db.session.commit()
