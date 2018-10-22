@@ -71,11 +71,23 @@ def validate_email(text):
         return match.group(0)
     return None
 
+def make_censorer():
+    with open("censored.txt") as f:
+        words = f.read().strip().lower().splitlines()
+        pattern = "|".join([re.escape(word) for word in words])
+        pattern = r"\b(?:%s)\b" % pattern
+        return re.compile(pattern)
+
+censorer = make_censorer()
+
+def censor(text):
+    return censorer.sub("", text)
+
 @app.route('/charge-ajax', methods=['POST'])
 def charge():
     amount = request.form["amount"] # already in cents
     token = request.form["token"]
-    name = request.form["donor"][:30]
+    name = censor(request.form["donor"][:30])
     email = validate_email(request.form["email"])
 
     try:
