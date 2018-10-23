@@ -63,26 +63,6 @@ def getStats():
     }
     return json.dumps(results), 200
 
-email_pattern = r"""(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])"""
-email_regex = re.compile(email_pattern, re.IGNORECASE)
-def validate_email(text):
-    match = email_regex.match(text.strip())
-    if match is not None:
-        return match.group(0)
-    return None
-
-def make_censorer():
-    with open("censored.txt") as f:
-        words = f.read().strip().lower().splitlines()
-        pattern = "|".join([re.escape(word) for word in words])
-        pattern = r"\b(?:%s)\b" % pattern
-        return re.compile(pattern)
-
-censorer = make_censorer()
-
-def censor(text):
-    return censorer.sub("", text)
-
 @app.route('/charge-ajax', methods=['POST'])
 def charge():
     amount = request.form["amount"] # already in cents
@@ -144,6 +124,26 @@ def charge():
             "message" : "An error occurred"
         }
         return json.dumps(result), 400
+
+email_pattern = r"""(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])"""
+email_regex = re.compile(email_pattern, re.IGNORECASE)
+def validate_email(text):
+    match = email_regex.match(text.strip())
+    if match is not None:
+        return match.group(0)
+    return None
+
+def make_censorer():
+    with open("censored.txt") as f:
+        words = f.read().strip().lower().splitlines()
+        pattern = "|".join([re.escape(word) for word in words])
+        pattern = r"\b(?:%s)\b" % pattern
+        return re.compile(pattern)
+
+censorer = make_censorer()
+
+def censor(text):
+    return censorer.sub("", text)
 
 def send_email(email, subject, html):
     msg = Message(subject, recipients=[email], html=html)

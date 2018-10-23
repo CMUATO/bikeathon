@@ -1,5 +1,6 @@
 *.pyc
 .DS_Store
+censored.txt
 config.json
 piconfig.json
 data.db
