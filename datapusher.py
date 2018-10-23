@@ -30,13 +30,6 @@ class Rider(object):
 
     def Push(self):
         """Sends payload to server at url and updates local json"""
-        print("Pushing...")
-        headers = {"content-type": "application/json"}
-        r = requests.post(self.url, data=json.dumps(self.payload),
-            headers=headers)
-        print(r)
-        self.last_push = time.time()
-
         with open("piconfig.json", "r") as file:
             configjson = file.read()
             configDict = json.loads(configjson)
@@ -45,6 +38,13 @@ class Rider(object):
 
         with open("piconfig.json", "w") as file:
             file.write(configjson)
+
+        print("Pushing...")
+        headers = {"content-type": "application/json"}
+        r = requests.post(self.url, data=json.dumps(self.payload),
+            headers=headers, timeout=3)
+        print(r)
+        self.last_push = time.time()
 
     def Changer(self):
         """Add distance to payload"""

@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-import json
+import json, threading
 from datapusher import Rider
 
 hallPin = 3
@@ -26,7 +26,8 @@ try:
             if last == 1:
                 count += 1
                 print(count)
-                rider.Changer()
+                # thread so we can keep tracking distance without waiting
+                threading.Thread(target=rider.Changer).start()
             last = 0
 finally:
     GPIO.cleanup()
