@@ -26,8 +26,13 @@ try:
             if last == 1:
                 count += 1
                 print(count)
+                if time.time() - rider.last_push > rider.push_delay:
+                    rider.last_push = time.time()
+                    push = True
+                else:
+                    push = False
                 # thread so we can keep tracking distance without waiting
-                threading.Thread(target=rider.Changer).start()
+                threading.Thread(target=rider.Changer, args=(push,)).start()
             last = 0
 finally:
     GPIO.cleanup()

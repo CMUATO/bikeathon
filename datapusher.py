@@ -44,10 +44,9 @@ class Rider(object):
         r = requests.post(self.url, data=json.dumps(self.payload),
             headers=headers, timeout=3)
         print(r)
-        self.last_push = time.time()
 
-    def Changer(self):
+    def Changer(self, push):
         """Add distance to payload"""
         self.Update_Payload()
-        if time.time() - self.last_push > self.push_delay:
+        if push:
             self.Push()
