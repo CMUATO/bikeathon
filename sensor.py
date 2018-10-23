@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-import json, threading
+import json, threading, time
 from datapusher import Rider
 
 hallPin = 3
