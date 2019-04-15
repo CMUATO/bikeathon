@@ -7,10 +7,10 @@ def fetch_venmo_balance():
         access_token = configDict["venmo_token"]
 
     data = {"access_token": access_token}
-    response = requests.get("https://api.venmo.com/v1/me", json=data)
+    response = requests.get("https://venmo.com/api/v5/me", params=data)
 
     try:
-        return float(response.json()["data"]["balance"])
+        return float(response.json()["balance"])
     except KeyError:
         print("Access token has expired. Please reauthorize by running "
               "venmo_configure.py. Returning None.")

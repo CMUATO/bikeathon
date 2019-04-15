@@ -3,6 +3,8 @@ from models import Stats
 from venmo_pull import fetch_venmo_balance
 import sys
 
+# sqlite uri: sqlite:///data.db
+
 def init_db():
     db.drop_all()
     db.create_all()
