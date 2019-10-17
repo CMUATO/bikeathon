@@ -29,8 +29,9 @@ def postBikeData():
 
     with open("config.json", "r") as file:
         config = file.read()
-        configDict = json.loads(config)
-        password = configDict["post_password"]
+
+    configDict = json.loads(config)
+    password = configDict["post_password"]
 
     if jsonDict["password"] != password:
         return "incorrect password", 400
@@ -136,9 +137,10 @@ def validate_email(text):
 def make_censorer():
     with open("censored.txt") as f:
         words = f.read().strip().lower().splitlines()
-        pattern = "|".join([re.escape(word) for word in words])
-        pattern = r"\b(?:%s)\b" % pattern
-        return re.compile(pattern)
+
+    pattern = "|".join([re.escape(word) for word in words])
+    pattern = r"\b(?:%s)\b" % pattern
+    return re.compile(pattern)
 
 censorer = make_censorer()
 
@@ -155,8 +157,9 @@ def stripeSetup():
     # See your keys here: https://dashboard.stripe.com/account/apikeys
     with open("config.json") as file:
         config = file.read()
-        configDict = json.loads(config)
-        stripe.api_key = configDict["stripe_api_key"]
+
+    configDict = json.loads(config)
+    stripe.api_key = configDict["stripe_api_key"]
 
 def initScheduler():
     # Initialize scheduler for updating money from gsheet and venmo

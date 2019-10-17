@@ -9,10 +9,11 @@ count = 0
 
 with open("piconfig.json", "r") as file:
     configjson = file.read()
-    configDict = json.loads(configjson)
-    uid = configDict["uid"]
-    wheel_radius = configDict["wheel_radius"]
-    distance = configDict["distance"]
+
+configDict = json.loads(configjson)
+uid = configDict["uid"]
+wheel_radius = configDict["wheel_radius"]
+distance = configDict["distance"]
 
 rider = Rider(uid=uid, wheel_radius=wheel_radius, distance=distance)
 

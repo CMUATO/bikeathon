@@ -3,8 +3,9 @@ import venmo, requests, json
 def fetch_venmo_balance():
     with open("config.json", "r") as file:
         config = file.read()
-        configDict = json.loads(config)
-        access_token = configDict["venmo_token"]
+
+    configDict = json.loads(config)
+    access_token = configDict["venmo_token"]
 
     data = {"access_token": access_token}
     response = requests.get("https://venmo.com/api/v5/me", params=data)

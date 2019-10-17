@@ -32,9 +32,10 @@ class Rider(object):
         """Sends payload to server at url and updates local json"""
         with open("piconfig.json", "r") as file:
             configjson = file.read()
-            configDict = json.loads(configjson)
-            configDict["distance"] = self.distance
-            configjson = json.dumps(configDict, indent=4, sort_keys=True)
+
+        configDict = json.loads(configjson)
+        configDict["distance"] = self.distance
+        configjson = json.dumps(configDict, indent=4, sort_keys=True)
 
         with open("piconfig.json", "w") as file:
             file.write(configjson)
