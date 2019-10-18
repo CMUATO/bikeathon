@@ -128,8 +128,9 @@ Ideally, the Raspberry Pis won't introduce as many problems anymore as they have
 
 Once you get a bike set up for testing and a strong magnet attached somewhere on the wheel such that it will pass by a good location to plant the sensor, you'll need to connect up the Raspberry Pi to the sensor. These images should be enough to show how to connect the wires to the correct pins of the pi and the hall-effect sensor:
 
-![Sensor Pins](https://github.com/CMUATO/bikeathon/raw/master/static/rpi1.png "Sensor Pins")
-![Pi Pins](https://github.com/CMUATO/bikeathon/raw/master/static/rpi2.png "Pi Pins")
+<img src="static/rpi1.jpg" width="500">
+
+<img src="static/rpi2.jpg" width="500">
 
 It will probably be best to test the bike now by connecting the sensor, making sure you clone (or copy) this repository onto the pi, and running the `sensor.py` script in a console window on the pi and watching the output as you pedal to see if it counts every pass of the sensor.
 
