@@ -9,7 +9,7 @@ class Rider(object):
         radius = wheel_radius * in_to_mil
         self.circumference = 2 * math.pi * radius
 
-        config = open("app/config.json").read()
+        config = open("config.json").read()
         configDict = json.loads(config)
         url = configDict["url"]
         password = configDict["post_password"]

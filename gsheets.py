@@ -1,11 +1,17 @@
-import pygsheets, json
+import pygsheets, json, os
+
+try:
+    os.environ["GDRIVE_API_CREDENTIALS"]
+except KeyError:
+    gsheetsjson = open("gsheets_secret.json").read().strip()
+    os.environ["GDRIVE_API_CREDENTIALS"] = gsheetsjson
 
 def init_gsheet():
     config = open("config.json").read()
     configDict = json.loads(config)
     gsheets_key = configDict["gsheets_key"]
 
-    gc = pygsheets.authorize("gsheets_secret.json")
+    gc = pygsheets.authorize(service_account_env_var="GDRIVE_API_CREDENTIALS")
     sh = gc.open_by_key(gsheets_key)
     wks = sh.worksheet_by_title("Data")
     return wks

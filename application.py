@@ -1,4 +1,4 @@
-import re, stripe, json, atexit
+import re, stripe, json, atexit, os
 
 from flask import request, render_template, send_file
 from flask_mail import Message
@@ -10,9 +10,6 @@ from venmo_pull import fetch_venmo_balance
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
-
-# EB looks for an "application" callable by default.
-application = app
 
 @app.route("/")
 def index():
@@ -135,9 +132,8 @@ def validate_email(text):
     return None
 
 def make_censorer():
-    with open("censored.txt") as f:
-        words = f.read().strip().lower().splitlines()
-
+    txt = os.getenv("CENSOR_TEXT", "bad").strip().lower()
+    words = txt.splitlines()
     pattern = "|".join([re.escape(word) for word in words])
     pattern = r"\b(?:%s)\b" % pattern
     return re.compile(pattern)

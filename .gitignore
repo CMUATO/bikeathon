@@ -2,11 +2,6 @@
 .DS_Store
 censored.txt
 config.json
-piconfig.json
 data.db
 gsheets_secret.json
 sheets.googleapis.com-python.json
-
-# Elastic Beanstalk Files
-.elasticbeanstalk
-.ebextensions
