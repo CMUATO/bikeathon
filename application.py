@@ -13,7 +13,6 @@ from apscheduler.triggers.interval import IntervalTrigger
 
 @app.route("/")
 def index():
-    return ""
     return send_file("templates/index.html")
 
 @app.route("/sensor", methods=["POST"])
