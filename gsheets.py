@@ -1,4 +1,5 @@
 import pygsheets, json, os
+from app_manager import app
 
 try:
     os.environ["GDRIVE_API_CREDENTIALS"]
@@ -7,9 +8,7 @@ except KeyError:
     os.environ["GDRIVE_API_CREDENTIALS"] = gsheetsjson
 
 def init_gsheet():
-    config = open("config.json").read()
-    configDict = json.loads(config)
-    gsheets_key = configDict["gsheets_key"]
+    gsheets_key = app.config["GSHEETS_KEY"]
 
     gc = pygsheets.authorize(service_account_env_var="GDRIVE_API_CREDENTIALS")
     sh = gc.open_by_key(gsheets_key)

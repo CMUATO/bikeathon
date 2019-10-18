@@ -11,7 +11,7 @@ def config_venmo():
         config = file.read()
 
     configDict = json.loads(config)
-    configDict["venmo_token"] = access_token
+    configDict["VENMO_TOKEN"] = access_token
     configjson = json.dumps(configDict, indent=4, sort_keys=True)
 
     with open("config.json", "w") as file:

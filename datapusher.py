@@ -11,8 +11,8 @@ class Rider(object):
 
         config = open("config.json").read()
         configDict = json.loads(config)
-        url = configDict["url"]
-        password = configDict["post_password"]
+        url = configDict["URL"]
+        password = configDict["POST_PASSWORD"]
         self.url = "%s/sensor" % url
         self.password = password
 

@@ -1,11 +1,8 @@
 import venmo, requests, json
+from app_manager import app
 
 def fetch_venmo_balance():
-    with open("config.json", "r") as file:
-        config = file.read()
-
-    configDict = json.loads(config)
-    access_token = configDict["venmo_token"]
+    access_token = app.config["VENMO_TOKEN"]
 
     data = {"access_token": access_token}
     response = requests.get("https://venmo.com/api/v5/me", params=data)

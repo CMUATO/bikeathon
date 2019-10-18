@@ -24,11 +24,7 @@ def postBikeData():
         ("password" not in jsonDict) or ("bikeid" not in jsonDict)):
         return "missing data", 400
 
-    with open("config.json", "r") as file:
-        config = file.read()
-
-    configDict = json.loads(config)
-    password = configDict["post_password"]
+    password = app.config["POST_PASSWORD"]
 
     if jsonDict["password"] != password:
         return "incorrect password", 400
@@ -151,11 +147,7 @@ def stripeSetup():
     # Set your secret key:
     # remember to change this to your live secret key in production
     # See your keys here: https://dashboard.stripe.com/account/apikeys
-    with open("config.json") as file:
-        config = file.read()
-
-    configDict = json.loads(config)
-    stripe.api_key = configDict["stripe_api_key"]
+    stripe.api_key = app.config["STRIPE_API_KEY"]
 
 def initScheduler():
     # Initialize scheduler for updating money from gsheet and venmo
