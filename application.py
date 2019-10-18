@@ -178,8 +178,12 @@ def initScheduler():
 
 @app.before_first_request
 def init():
+    app.debug = True
+    print("Test1")
     stripeSetup()
+    print("Test2")
     initScheduler()
+    print("Test3")
 
 if __name__ == "__main__":
     app.run(debug=True)
