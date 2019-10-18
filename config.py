@@ -17,5 +17,3 @@ MAIL_USE_SSL = True
 MAIL_USERNAME = os.getenv("MAIL_USERNAME", email)
 MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", password)
 MAIL_DEFAULT_SENDER = MAIL_USERNAME
-
-gsheetsjson = open("gsheets_secret.json").read().strip()
