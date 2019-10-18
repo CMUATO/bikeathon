@@ -12,7 +12,7 @@ try:
 except FileNotFoundError:
     email = mailpass = postpass = venmotok = stripekey = gsheetskey = None
 
-DEBUG = False
+DEBUG = True
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///data.db")
 MAIL_SERVER = "smtp.gmail.com"
