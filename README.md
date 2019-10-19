@@ -60,10 +60,6 @@ IMPORTANT NOTE: these Venmo tokens have short lifetimes (maybe 30 minutes of ina
 
 As long as the donation button form accepts a Name field, making sure that field is censored is an appropriate measure (since bad actors could put vulgar language in the name field and someone else's email, making us send vulgar language to an innocent person). You will need to find a suitable list of censored words and put them into a file called `censored.txt` in the root directory, one word/phrase per line.
 
-## Event Time
-
-Quick maybe obvious note, make sure you update the start and end dates/times in `static/main.js` so that the timer on the site works properly.
-
 ## Local Testing
 
 Before deploying the application, you should test it locally to make sure everything works. First, clone this git repository to somewhere on your machine, install the requirements, create and fill `config.json` as well as `censored.txt`, run the `init_db` function from `init_db.py`, and then run `application.py`. Then open the url given in the console and make sure everything looks right.
@@ -157,4 +153,8 @@ To make sure it runs on boot-up, restart the pi:
 sudo reboot
 ```
 
-Now you should be all set for Bikeathon!
+# Static Elements
+
+Apart from setting all the tech up, you'll need to make sure the website itself is up to date. The html for this application can be found in two places: `templates` and `docs`. The templates folder contains the page that will be served while the application is live, while the docs folder is just essentially a copy that this repository is configured to serve as a static site for basically the remainder of the year. You should make sure `index.html` in templates is up to date when you deploy the heroku application (don't forget to update your DNS settings to point to the heroku app from your custom domain), and then after the main event is done you should update `index.html` in the docs folder with the total amount of money raised and change your DNS back to this github repository (serving from the docs folder).
+
+And of course, quick maybe obvious note, make sure you update the start and end dates/times in `static/main.js` so that the timer on the site works properly.
