@@ -120,6 +120,10 @@ Note: you can use custom domains on free dynos, but those won't have SSL certifi
 
 Ideally, the Raspberry Pis won't introduce as many problems anymore as they have in the past. First, obviously, make sure you have a Raspberry Pi and you've installed the OS and it's all set up. Before moving forward, depending on your experience with pis, you may find [this link](http://www.circuitbasics.com/how-to-set-up-a-static-ip-on-the-raspberry-pi/) useful for setting up a static ip on your pi (so that you don't have to find the ip address on the pi itself every time you want to ssh into it).
 
+## Pi Config
+
+You need to clone (or copy) this repository onto your Pi to get it the files it will need to run the sensor program. Once you've done that, you will need to edit the `piconfig.json` file to make sure it is set up properly. That file includes `distance`, `wheel_radius`, and `uid`. Distance should start at 0, but it will be updated as distance is tracked by the Pi during the event as a recoverable copy of the value in case the network connection fails and the Pi needs to reboot. The wheel radius is measured in inches. The UID must be a unique number for every Pi in the event. Currently the application is hardcoded to track two bikes, so the UID must be either 1 or 2, but if you want to change this (either add more bikes or make it support an arbitrary number of bikes) you'll need to change the code in `models.py` and the sensor route in `application.py` to handle more UID's.
+
 ## Local Testing
 
 Once you get a bike set up for testing and a strong magnet attached somewhere on the wheel such that it will pass by a good location to plant the sensor, you'll need to connect up the Raspberry Pi to the sensor. These images should be enough to show how to connect the wires to the correct pins of the pi and the hall-effect sensor:
