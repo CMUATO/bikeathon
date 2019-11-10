@@ -46,7 +46,7 @@ This application uses the Python Google Sheets API to track data recorded in the
 
 It's probably a good idea to select "Protect sheet" for both of these sheets so that you don't accidentally mess up the data.
 
-Once the sheet is set up, you will need to make sure you have an account with the Drive and Sheets APIs enabled. For this process you can follow this decent [walkthrough](https://medium.com/@denisluiz/python-with-google-sheets-service-account-step-by-step-8f74c26ed28e) up until you download the JSON and share the spreadsheet with your credential. MAKE SURE you literally share the spreadsheet with the weird email that you get out the process in this walkthrough, since that it how the app gets access to it.
+Once the sheet is set up, you will need to make sure you have an account with the Drive and Sheets APIs enabled. For this process you can follow this decent [walkthrough](https://medium.com/@denisluiz/python-with-google-sheets-service-account-step-by-step-8f74c26ed28e) up until you download the JSON and share the spreadsheet with your credential. MAKE SURE you literally share the spreadsheet with the weird email that you get out of the process in this walkthrough, since that it how the app gets access to it.
 
 Lastly, find the JSON you downloaded, rename it to `gsheets_secret.json`, and put it in the application/repository directory. Now the application should have access to Google Sheets!
 
@@ -148,7 +148,7 @@ Now to enable this service on the pi, run
 
 ```
 sudo systemctl daemon-reload
-sudo systemctl enable sample.service
+sudo systemctl enable bikeathon.service
 ```
 
 To make sure it runs on boot-up, restart the pi:
