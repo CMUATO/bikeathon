@@ -33,18 +33,18 @@ function stripeTokenHandler(token, amount, donor, email) {
       email: email
     };
     Materialize.toast("Processing...", 1000);
-    $.post("/charge-ajax", params, function (text) {
-      let data = JSON.parse(text);
-      if (data["success"] === 1) {
+    $.post("/charge-ajax", params, function (data) {
+      let dataParsed = JSON.parse(data);
+      if (dataParsed["success"] === 1) {
         $("#payment-wrapper").fadeOut();
         Materialize.toast('Thank you for your donation!', 10000);
         donated = false; // reset so they can donate again without refreshing
       } else {
-        $("#card-errors").text("An error has occurred: " + data["message"]);
+        $("#card-errors").text("An error has occurred. Please refresh the webpage: " + data["message"] );
         //donated = false;
         // Do not allow the user to keep pressing the donate button. 
       }
-    });
+    }, "text");
   }
 }
 
