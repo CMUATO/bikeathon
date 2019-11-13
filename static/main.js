@@ -34,6 +34,7 @@ function stripeTokenHandler(token, amount, donor, email) {
     };
     Materialize.toast("Processing...", 1000);
     $.post("/charge-ajax", params, function (data) {
+      Materialize.toast("Response received from server.", 1000);
       let dataParsed = JSON.parse(data);
       if (dataParsed["success"] === 1) {
         $("#payment-wrapper").fadeOut();
