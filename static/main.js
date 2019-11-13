@@ -40,8 +40,9 @@ function stripeTokenHandler(token, amount, donor, email) {
         Materialize.toast('Thank you for your donation!', 10000);
         donated = false; // reset so they can donate again without refreshing
       } else {
-        $("#card-errors").text(data["message"]);
-        donated = false;
+        $("#card-errors").text("An error has occurred: " + data["message"]);
+        //donated = false;
+        // Do not allow the user to keep pressing the donate button. 
       }
     });
   }
