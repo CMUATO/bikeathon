@@ -30,7 +30,9 @@ You should get the Stripe API key from the stripe website, change the URL if the
 
 If you would like to use Gmail to send emails, you will need to take a few steps to get authentication working properly.
 
-Gmail has some strict security protocols that this flask app cannot adhere to, so you will need to turn on the setting to allow "less secure apps" to access your account (find this in the Google Account settings). Alternatively, if your account has 2 Factor Authentication turned on, you will need to generate an app password and use that in place of your account password above. This will not require the "less secure apps" setting.
+Gmail has some strict security protocols that this flask app cannot adhere to, so you will need to turn on the setting to allow "less secure apps" to access your account (find this in the Google Account settings). If this doesn't work, you may also need to visit [this link](https://accounts.google.com/b/0/DisplayUnlockCaptcha) (make sure the number in the url bar following the `/b/` is the number you see in the url bar when in your account's gmail following the `/u/` and change it if necessary), click continue, then try sending another email from the application. This may or may not work long-term, so keep an eye out for it starts to fail again in the near future. Another potential solution is to try enabling IMAP access [here](https://mail.google.com/mail/#settings/fwdandpop).
+
+Alternatively, if your account has 2 Factor Authentication turned on, you will need to generate an [app password](https://support.google.com/accounts/answer/185833) and use that in place of your account password above. This will not require the "less secure apps" setting.
 
 Additionally, you may also use whatever G Suite domain you have for Google Mail. For example, CMU students may use your @andrew.cmu.edu email. To set this up, follow the instructions at [this page](https://www.cmu.edu/computing/services/comm-collab/email-calendar/google/how-to/index.html "this page") titled "How to Use Google Mail" in the section about setting up an email client and set a G Suite password, which you will use as the password in the config secrets file. This might require the "less secure apps" setting mentioned above.
 
@@ -46,7 +48,7 @@ This application uses the Python Google Sheets API to track data recorded in the
 
 It's probably a good idea to select "Protect sheet" for both of these sheets so that you don't accidentally mess up the data.
 
-Once the sheet is set up, you will need to make sure you have an account with the Drive and Sheets APIs enabled. For this process you can follow this decent [walkthrough](https://medium.com/@denisluiz/python-with-google-sheets-service-account-step-by-step-8f74c26ed28e) up until you download the JSON and share the spreadsheet with your credential. MAKE SURE you literally share the spreadsheet with the weird email that you get out the process in this walkthrough, since that it how the app gets access to it.
+Once the sheet is set up, you will need to make sure you have an account with the Drive and Sheets APIs enabled. For this process you can follow this decent [walkthrough](https://medium.com/@denisluiz/python-with-google-sheets-service-account-step-by-step-8f74c26ed28e) up until you download the JSON and share the spreadsheet with your credential. MAKE SURE you literally share the spreadsheet with the weird email that you get out of the process in this walkthrough, since that it how the app gets access to it.
 
 Lastly, find the JSON you downloaded, rename it to `gsheets_secret.json`, and put it in the application/repository directory. Now the application should have access to Google Sheets!
 
@@ -120,6 +122,10 @@ Note: you can use custom domains on free dynos, but those won't have SSL certifi
 
 Ideally, the Raspberry Pis won't introduce as many problems anymore as they have in the past. First, obviously, make sure you have a Raspberry Pi and you've installed the OS and it's all set up. Before moving forward, depending on your experience with pis, you may find [this link](http://www.circuitbasics.com/how-to-set-up-a-static-ip-on-the-raspberry-pi/) useful for setting up a static ip on your pi (so that you don't have to find the ip address on the pi itself every time you want to ssh into it).
 
+## Pi Config
+
+You need to clone (or copy) this repository onto your Pi to get it the files it will need to run the sensor program. Once you've done that, you will need to edit the `piconfig.json` file to make sure it is set up properly. That file includes `distance`, `wheel_radius`, and `uid`. Distance should start at 0, but it will be updated as distance is tracked by the Pi during the event as a recoverable copy of the value in case the network connection fails and the Pi needs to reboot. The wheel radius is measured in inches. The UID must be a unique number for every Pi in the event. Currently the application is hardcoded to track two bikes, so the UID must be either 1 or 2, but if you want to change this (either add more bikes or make it support an arbitrary number of bikes) you'll need to change the code in `models.py` and the sensor route in `application.py` to handle more UID's.
+
 ## Local Testing
 
 Once you get a bike set up for testing and a strong magnet attached somewhere on the wheel such that it will pass by a good location to plant the sensor, you'll need to connect up the Raspberry Pi to the sensor. These images should be enough to show how to connect the wires to the correct pins of the pi and the hall-effect sensor:
@@ -144,7 +150,7 @@ Now to enable this service on the pi, run
 
 ```
 sudo systemctl daemon-reload
-sudo systemctl enable sample.service
+sudo systemctl enable bikeathon.service
 ```
 
 To make sure it runs on boot-up, restart the pi:
