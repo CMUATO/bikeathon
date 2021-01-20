@@ -1,0 +1,6 @@
+This is the directory for Bikeathon files.
+
+config.json -- Contains login information that's put into Rider Object
+sensor.py -- Get input from Hall effect sensors and count the number of wheel turns. Push updates to Object Rider.
+datapusher.py -- Defines Rider Object with functions that updates the object and push updates to website.
+
