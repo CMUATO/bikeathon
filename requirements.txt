@@ -43,4 +43,4 @@ tzlocal==2.0.0
 uritemplate==3.0.0
 urllib3==1.26.5
 venmo==0.12.0
-Werkzeug==0.16.0
+Werkzeug==2.2.3
